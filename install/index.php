@@ -17,7 +17,6 @@ class codematrix_elemmass extends CModule {
 		include(dirname(__FILE__)."/version.php");
 		$this->MODULE_VERSION = $arModuleVersion["VERSION"];
 		$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-		$this->PARTNER_NAME = GetMessage("PARTNER_NAME");
 //		$this->PARTNER_URI = GetMessage("WDA_PARTNER_URI");
 		$this->MODULE_NAME = GetMessage("WDA_MODULE_NAME");
 		$this->MODULE_DESCRIPTION = GetMessage("WDA_MODULE_DESCR");
