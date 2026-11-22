@@ -27,7 +27,3 @@ CodeMatrix Elemmass — переименованная версия модуля
 
 - [Историческая документация исходного модуля](docs/legacy/README.original.md)
 - [Ветка разработки v2](https://github.com/codematrix-studio/codematrix.elemmass/tree/v2-development)
-
-## Авторство
-
-**CodeMatrix STUDIO**
