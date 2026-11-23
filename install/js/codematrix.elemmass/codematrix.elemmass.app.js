@@ -4,6 +4,8 @@
         throw new Error('CodeMatrix Elemmass: bundled jQuery failed to load.');
     }
     var cmJQuery = window.jQuery;
+    // Keep the legacy action state accessible to Bitrix page-level callbacks.
+    window.WdaCurrentAction = false;
 
     // Restore the legacy .live() API used by this module on jQuery 1.12.
     if (!cmJQuery.fn.live) {
@@ -218,7 +220,7 @@ function WDA_OnChangeIBlockID(Select, Callback) {
 }
 function WDA_OnChangeAction(Select, Callback) {
 	WDA_DisableControls();
-	WdaCurrentAction = $(Select).val();
+	WdaCurrentAction = window.WdaCurrentAction = $(Select).val();
 	Log('onWdaBeforeActionChange');
 	BX.onCustomEvent('onWdaBeforeActionChange');
 	if (WdaCurrentAction!='') {
