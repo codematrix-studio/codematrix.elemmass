@@ -6,22 +6,22 @@ class CME_ElementUpdate extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин выполняет операцию по пересохранению элементов/товаров.';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
 	static function GetMessage($Code, $ConvertCharset=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		$MESS = array(
 			'SELECT_EVENT_CCatalogProduct_Update' => 'Обновить товар торгового каталога [CCatalogProduct::Update]',
 			'SELECT_EVENT_CIBlockElement_Update' => 'Обновить элемент инфоблока [CIBlockElement::Update]',
 			'ALERT_NOTHING_SELECTED' => 'Выберите хотя бы одно действие для пересохранения',
 		);
 		$MESS = trim($MESS[$Code]);
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
