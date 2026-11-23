@@ -8,9 +8,9 @@ class CME_SetValues extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин выполняет массовое заполнение полей. В настоящее время не поддерживаются поля «Картинка для анонса» и «Детальная картинка», а также свойства типа «Файл» и «Видео».';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -66,16 +66,16 @@ class CME_SetValues extends CME_Plugin {
 			'SEO_ELEMENT_PAGE_TITLE' => '[PAGE_TITLE] Заголовок страницы',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
 	//
 	static function AddHeadData() {
-        $cwda = new CWDA;
-		$arStores = $cwda->GetStoresList();
+        $cme = new CME;
+		$arStores = $cme->GetStoresList();
 		$GLOBALS['APPLICATION']->SetAdditionalCss('/bitrix/components/bitrix/main.lookup.input/templates/iblockedit/style.css');
 		$GLOBALS['APPLICATION']->AddHeadScript('/bitrix/components/bitrix/main.lookup.input/script.js');
 		$GLOBALS['APPLICATION']->AddHeadScript('/bitrix/components/bitrix/main.lookup.input/templates/iblockedit/script2.js');
@@ -304,7 +304,7 @@ class CME_SetValues extends CME_Plugin {
 		return $arResult;
 	}
 	static function ShowAdditionalSettings() {
-        $cwda = new CWDA;
+        $cme = new CME;
 		$IBlockID = IntVal($_GET['iblock_id']);
 		$Target = htmlspecialcharsbx($_GET['target']);
 		CModule::IncludeModule('iblock');
@@ -356,7 +356,7 @@ class CME_SetValues extends CME_Plugin {
 					print '<input name="PROP['.$arProperty['CODE'].'][n0]" value="Y" type="checkbox" />';
 					break;
 				case 'L:WDA_MEASURE':
-					$arMeasureList = $cwda->GetMeasureList();
+					$arMeasureList = $cme->GetMeasureList();
 					print '<select name="PROP['.$arProperty['CODE'].'][n0]">';
 					foreach($arMeasureList as $arMeasure) {
 						print '<option value="'.$arMeasure['ID'].'">'.$arMeasure['MEASURE_TITLE'].'</option>';
@@ -364,7 +364,7 @@ class CME_SetValues extends CME_Plugin {
 					print '</select>';
 					break;
 				case 'L:WDA_VAT_ID':
-					$arVatList = $cwda->GetVatList();
+					$arVatList = $cme->GetVatList();
 					print '<select name="PROP['.$arProperty['CODE'].'][n0]">';
 					foreach($arVatList as $arVat) {
 						$strRate = '';
@@ -435,7 +435,7 @@ class CME_SetValues extends CME_Plugin {
 			}
 			$HTML = ob_get_clean();
 			if ($strFieldType=='PRICE') {
-				$arCurrencies = $cwda->GetCurrencyList();
+				$arCurrencies = $cme->GetCurrencyList();
 				$strCurrencySelect = '<select name="CURRENCY">';
 				foreach($arCurrencies as $Key => $arCurrency) {
 					$strCurrencySelect .= '<option value="'.$Key.'">'.$Key.'</option>';
@@ -468,8 +468,8 @@ class CME_SetValues extends CME_Plugin {
 			} elseif (in_array($Target,array('CATALOG_WEIGHT'))) {
 				$HTML = str_replace('<br></td>','&nbsp;&nbsp;'.self::GetMessage('SIZE_UNIT_G',true).'</td>',$HTML);
 			}
-			if (!$cwda->IsUtf()) {
-				$HTML = $cwda->ConvertCharset($HTML,'CP1251','UTF-8');
+			if (!$cme->IsUtf()) {
+				$HTML = $cme->ConvertCharset($HTML,'CP1251','UTF-8');
 			}
 			$HTML = trim($HTML);
 			if ($HTML=='') {
@@ -479,12 +479,12 @@ class CME_SetValues extends CME_Plugin {
 		}
 	}
 	static function ShowSettings($IBlockID=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		?>
 		<div id="wda_settings_<?=self::CODE?>">
 			<div class="wda_settings_header"><?=self::GetMessage('FIELD_TARGET');?></div>
 			<div>
-				<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field" data-callback="wda_field_callback"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_PRICE_TARGET'));?></div>
+				<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field" data-callback="wda_field_callback"></select><?=$cme->ShowHint(self::GetMessage('SELECT_PRICE_TARGET'));?></div>
 			</div>
 			<br/>
 			<div class="wda_settings_header"><?=self::GetMessage('FIELD_VALUE');?></div>
@@ -546,7 +546,7 @@ class CME_SetValues extends CME_Plugin {
 	}
 	static function Process($ElementID, $arElement, $Params) {
 		$bResult = false;
-        $cwda = new CWDA;
+        $cme = new CME;
 		$bCatalogModule = CModule::IncludeModule('catalog');
 		$Target = $Params['field_target'];
 		$ValueArray = $Params['PROP'][$Target]; // Для свойств - далее будет переопределение
@@ -581,8 +581,8 @@ class CME_SetValues extends CME_Plugin {
 				} elseif (in_array($Target,array('CREATED_BY','MODIFIED_BY'))) {
 					$Value = $Value['VALUE'];
 				}
-				if (!$cwda->IsUtf()) {
-					$Value = $cwda->ConvertCharset($Value);
+				if (!$cme->IsUtf()) {
+					$Value = $cme->ConvertCharset($Value);
 				}
 				if(in_array($Target,array('NAME','CODE','EXTERNAL_ID'))){
 					if($Params['use_counter']=='Y') {
@@ -594,14 +594,14 @@ class CME_SetValues extends CME_Plugin {
 				}
 				$arFields[$Target] = $Value;
 				if ($IBlockElement->Update($ElementID,$arFields)) {
-                    $cwda->Log('Updated element #'.$ElementID.', fields: '.print_r($arFields,1));
+                    $cme->Log('Updated element #'.$ElementID.', fields: '.print_r($arFields,1));
 					$bResult = true;
 				} else {
-                    $cwda->Log('Error update element #'.$ElementID.', ['.$IBlockElement->LAST_ERROR.'] fields: '.print_r($arFields,1));
+                    $cme->Log('Error update element #'.$ElementID.', ['.$IBlockElement->LAST_ERROR.'] fields: '.print_r($arFields,1));
 				}
 			} elseif (preg_match('#^CATALOG_PRICE_(\d+)$#',$Target,$M)) {
 				$PriceID = $M[1];
-				$arCurrencies = $cwda->GetCurrencyList();
+				$arCurrencies = $cme->GetCurrencyList();
 				$Currency = htmlspecialchars($Params['CURRENCY']);
 				if (strlen($Currency) && isset($arCurrencies[$Currency])) {
 					$Price = $ValueSingle;
@@ -614,14 +614,14 @@ class CME_SetValues extends CME_Plugin {
 					if(is_array($GLOBALS['WDI_BASE_PRICE']) && $GLOBALS['WDI_BASE_PRICE']['ID']!=$PriceID) {
 						$ExtraID = $Params['EXTRA_ID'];
 					}
-					if ($cwda->SetProductPrice($ElementID, $PriceID, $Price, $Currency, $ExtraID)) {
+					if ($cme->SetProductPrice($ElementID, $PriceID, $Price, $Currency, $ExtraID)) {
 						$bResult = true;
 					}
 				}
 			} elseif (preg_match('#^PROPERTY_(\d+)$#',$Target,$M)) {
 				$PropertyID = $M[1];
 				$Value = $Params['PROP'][$PropertyID];
-				$arProp = $cwda->GetPropertyFromArrayById($arElement['PROPERTIES'],$PropertyID);
+				$arProp = $cme->GetPropertyFromArrayById($arElement['PROPERTIES'],$PropertyID);
 				switch($arProp['PROPERTY_TYPE']) {
 					case 'S':
 						switch($arProp['USER_TYPE']) {
@@ -648,14 +648,14 @@ class CME_SetValues extends CME_Plugin {
 						}
 						break;
 				}
-				#$cwda->Log('Save property '.$PropertyID.', value: '.print_r($Value,1));
-				if (!$cwda->IsUtf()) {
+				#$cme->Log('Save property '.$PropertyID.', value: '.print_r($Value,1));
+				if (!$cme->IsUtf()) {
 					if (is_array($Value)) {
 						foreach($Value as $Key => $Item) {
-							$Value[$Key] = $cwda->ConvertCharset($Item);
+							$Value[$Key] = $cme->ConvertCharset($Item);
 						}
 					} else {
-						$Value = $cwda->ConvertCharset($Value);
+						$Value = $cme->ConvertCharset($Value);
 					}
 				}
 				if(in_array($arProp['PROPERTY_TYPE'],array('S','N'))){
@@ -683,7 +683,7 @@ class CME_SetValues extends CME_Plugin {
 			} elseif (preg_match('#^CATALOG_([\w\d_]+)$#',$Target,$M)) {
 				if ($bCatalogModule) {
 					$Value = $ValueSingle;
-					$arCurrencies = $cwda->GetCurrencyList();
+					$arCurrencies = $cme->GetCurrencyList();
 					$Currency = htmlspecialchars($Params['CURRENCY']);
 					if (in_array($Target,array('CATALOG_QUANTITY','CATALOG_PURCHASING_PRICE','CATALOG_QUANTITY_RESERVED','CATALOG_QUANTITY_TRACE','CATALOG_CAN_BUY_ZERO','CATALOG_SUBSCRIBE','CATALOG_VAT_INCLUDED','CATALOG_VAT_ID','CATALOG_WIDTH','CATALOG_LENGTH','CATALOG_HEIGHT','CATALOG_WEIGHT','CATALOG_MEASURE'))) {
 						$arFields = array(
@@ -733,10 +733,10 @@ class CME_SetValues extends CME_Plugin {
 								break;
 						}
 						if (CCatalogProduct::Add($arFields)) {
-                            $cwda->Log('Set '.$Target.'='.$Value.' for element#'.$ElementID);
+                            $cme->Log('Set '.$Target.'='.$Value.' for element#'.$ElementID);
 							$bResult = true;
 						} else {
-                            $cwda->Log('Error update '.$Target.' for element #'.$ElementID.', fields: '.print_r($arFields,1));
+                            $cme->Log('Error update '.$Target.' for element #'.$ElementID.', fields: '.print_r($arFields,1));
 						}
 					} elseif ($Target=='CATALOG_MEASURE_RATIO') {
 						$resRatio = CCatalogMeasureRatio::GetList(array(),array('PRODUCT_ID'=>$ElementID));
@@ -753,7 +753,7 @@ class CME_SetValues extends CME_Plugin {
 						if ($bCatalogModule && class_exists('CCatalogStore')) {
 							$Value = $ValueSingle;
 							$StoreID = $M[1];
-							if ($cwda->SetProductStoreQuantity($ElementID, $StoreID, $Value)) {
+							if ($cme->SetProductStoreQuantity($ElementID, $StoreID, $Value)) {
 								$bResult = true;
 							}
 						}
@@ -761,8 +761,8 @@ class CME_SetValues extends CME_Plugin {
 				}
 			} elseif (preg_match('#^SEO_([\w\d_]+)$#',$Target,$M)) {
 				$Value = $ValueSingle;
-				if (!$cwda->IsUtf()) {
-					$Value = $cwda->ConvertCharset($Value);
+				if (!$cme->IsUtf()) {
+					$Value = $cme->ConvertCharset($Value);
 				}
 				$arFields = array(
 					'IPROPERTY_TEMPLATES' => array(
@@ -770,10 +770,10 @@ class CME_SetValues extends CME_Plugin {
 					),
 				);
 				if ($IBlockElement->Update($ElementID,$arFields)) {
-                    $cwda->Log('Updated element #'.$ElementID.', fields: '.print_r($arFields,1));
+                    $cme->Log('Updated element #'.$ElementID.', fields: '.print_r($arFields,1));
 					$bResult = true;
 				} else {
-                    $cwda->Log('Error update element #'.$ElementID.', ['.$IBlockElement->LAST_ERROR.'] fields: '.print_r($arFields,1));
+                    $cme->Log('Error update element #'.$ElementID.', ['.$IBlockElement->LAST_ERROR.'] fields: '.print_r($arFields,1));
 				}
 			}
 		}
