@@ -6,8 +6,8 @@
 - Класс основного API: `CWDA` в корневом `include.php`
 - Базовый класс расширений: `CME_Plugin`
 - Хранилище профилей: `CME_Profile`
-- Административная точка входа: `admin/wda.php`
-- Страница профилей: `admin/wda_profiles.php`
+- Административная точка входа: `admin/cme.php`
+- Страница профилей: `admin/cme_profiles.php`
 - Клиентский сценарий: `install/js/codematrix.elemmass/codematrix.elemmass.js`
 
 Модуль использует административное API 1С-Битрикс, модуль инфоблоков и API каталога для операций, связанных с товарами и ценами.
