@@ -24,10 +24,12 @@ if (!CModule::IncludeModule('iblock')) {
 }
 
 CJSCore::RegisterExt('codematrix.elemmass', array(
-    'js' => '/bitrix/js/codematrix.elemmass/codematrix.elemmass.js',
-    'rel' => array('jquery2'),
+    'js' => array(
+        '/bitrix/js/codematrix.elemmass/vendor/jquery-1.12.4.min.js',
+        '/bitrix/js/codematrix.elemmass/codematrix.elemmass.app.js',
+    ),
 ));
-CJSCore::Init(array('jquery2', 'file_input', 'fileinput', 'codematrix.elemmass'));
+CJSCore::Init(array('file_input', 'fileinput', 'codematrix.elemmass'));
 $arExcludeKeys = array('autosave_id',
                        'iblock_id',
                        's',
