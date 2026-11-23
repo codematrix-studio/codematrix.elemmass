@@ -726,5 +726,34 @@ var WdaCheckTimeout,
 		WdaProcessRequest = false,
 		WdaCanSubmit,
 		WdaPageLoaded;
+
+    // Preserve the legacy global API used by inline scripts in admin/wda.php.
+    window.WDA_ShowMessage = WDA_ShowMessage;
+    window.WDA_SetCheckboxValue = WDA_SetCheckboxValue;
+    window.WDA_StrRepeat = WDA_StrRepeat;
+    window.WDA_FilterRevision = WDA_FilterRevision;
+    window.WDA_OnChangeIBlockID = WDA_OnChangeIBlockID;
+    window.WDA_OnChangeAction = WDA_OnChangeAction;
+    window.WDA_AddFilter = WDA_AddFilter;
+    window.WDA_DisableControls = WDA_DisableControls;
+    window.WDA_EnableControls = WDA_EnableControls;
+    window.WDA_ShowCancelButton = WDA_ShowCancelButton;
+    window.WDA_HideCancelButton = WDA_HideCancelButton;
+    window.WDA_CheckFilterResults = WDA_CheckFilterResults;
+    window.WDA_StartCheckTimeout = WDA_StartCheckTimeout;
+    window.WDA_LoadPropertyEnums = WDA_LoadPropertyEnums;
+    window.WDA_LoadTextType = WDA_LoadTextType;
+    window.WDA_Submit = WDA_Submit;
+    window.WDA_Process = WDA_Process;
+    window.WDA_StartAction = WDA_StartAction;
+    window.WDA_ContinueAction = WDA_ContinueAction;
+    window.WDA_EndAction = WDA_EndAction;
+    window.WDA_ActionError = WDA_ActionError;
+    window.WDA_ShowProgressBar = WDA_ShowProgressBar;
+    window.WDA_HideProgressBar = WDA_HideProgressBar;
+    window.WDA_SetProgressBarPosition = WDA_SetProgressBarPosition;
+    window.WDA_SetAdminUrl = WDA_SetAdminUrl;
+    window.WDA_GetCurPageParam = WDA_GetCurPageParam;
+    window.WDA_LoadProfile = WDA_LoadProfile;
     })(window, document, cmJQuery, cmJQuery);
 })(window, document);
