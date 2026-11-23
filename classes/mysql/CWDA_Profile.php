@@ -79,7 +79,7 @@ class CWDA_Profile {
 	}
 	
 	// Получение профиля по ID
-	function GetByID($ID) {
+	public static function GetByID($ID) {
 		global $DB;
 		$ID = IntVal($ID);
 		if($ID>0) {
