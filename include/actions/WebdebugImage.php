@@ -7,9 +7,9 @@ class CME_WebdebugImage extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин для обработки картинок модулем «<a href="http://marketplace.1c-bitrix.ru/solutions/webdebug.image/" tatget="_blank">Обработчик изображений</a>».';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -32,9 +32,9 @@ class CME_WebdebugImage extends CME_Plugin {
 			'WD_IMAGE_PROFILE_NONAME' => '(название не указано)',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
@@ -111,18 +111,18 @@ class CME_WebdebugImage extends CME_Plugin {
 		<?
 	}
 	static function ShowSettings($IBlockID=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		?>
 		<?if(CModule::IncludeModule('webdebug.image')):?>
 			<div id="wda_settings_<?=self::CODE?>">
 				<div class="wda_settings_header"><?=self::GetMessage('PROP_GROUP_1');?></div>
 				<div>
-					<div><select name="params[field_source]" id="wda_field_source" class="wda_select_field"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_SOURCE'));?></div>
+					<div><select name="params[field_source]" id="wda_field_source" class="wda_select_field"></select><?=$cme->ShowHint(self::GetMessage('SELECT_SOURCE'));?></div>
 				</div>
 				<br/>
 				<div class="wda_settings_header"><?=self::GetMessage('PROP_GROUP_2');?></div>
 				<div>
-					<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_TARGET'));?></div>
+					<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field"></select><?=$cme->ShowHint(self::GetMessage('SELECT_TARGET'));?></div>
 				</div>
 				<br/>
 				<div class="wda_settings_header"><?=self::GetMessage('PROP_WD_IMAGE_PROFILE');?></div>
@@ -134,7 +134,7 @@ class CME_WebdebugImage extends CME_Plugin {
 							<?foreach(self::WdImageGetProfiles() as $arProfile):?>
 								<option value="<?=$arProfile['ID'];?>">[<?=$arProfile['ID'];?>] <?=$arProfile['NAME'];?></option>
 							<?endforeach?>
-						</select><?=$cwda->ShowHint(self::GetMessage('SELECT_WD_IMAGE_PROFILE'));?>
+						</select><?=$cme->ShowHint(self::GetMessage('SELECT_WD_IMAGE_PROFILE'));?>
 					</div>
 				</div>
 			</div>
@@ -149,12 +149,12 @@ class CME_WebdebugImage extends CME_Plugin {
 	}
 	static function WdImageGetProfiles(){
 		$arResult = array();
-        $cwda = new CWDA;
+        $cme = new CME;
 		if(CModule::IncludeModule('webdebug.image')){
 			$resProfiles = CWebdebugImageProfile::GetList(array('SORT'=>'ASC','NAME'=>'ASC'),array());
 			while($arProfile = $resProfiles->GetNext(false,false)){
-				if(!$cwda->IsUtf()) {
-					$arProfile['NAME'] = $cwda->ConvertCharset($arProfile['NAME'],'CP1251','UTF-8');
+				if(!$cme->IsUtf()) {
+					$arProfile['NAME'] = $cme->ConvertCharset($arProfile['NAME'],'CP1251','UTF-8');
 				}
 				if(empty($arProfile['NAME'])){
 					$arProfile['NAME'] = self::GetMessage('WD_IMAGE_PROFILE_NONAME');
@@ -199,7 +199,7 @@ class CME_WebdebugImage extends CME_Plugin {
 	}
 	static function Process($ElementID, $arElement, $Params) {
 		$bResult = false;
-        $cwda = new CWDA;
+        $cme = new CME;
 		// Source
 		$SourceField = false;
 		if(in_array($Params['field_source'],array('PREVIEW_PICTURE','DETAIL_PICTURE'))) {
@@ -231,7 +231,7 @@ class CME_WebdebugImage extends CME_Plugin {
 			if (strlen($SourceField)) {
 				$Value = $arElement[$SourceField];
 			} elseif ($SourcePropertyID>0) {
-				$arProp = $cwda->GetPropertyFromArrayById($arElement['PROPERTIES'],$SourcePropertyID);
+				$arProp = $cme->GetPropertyFromArrayById($arElement['PROPERTIES'],$SourcePropertyID);
 				$Value = $arProp['VALUE'];
 			}
 			if (!empty($Value)) {
@@ -247,7 +247,7 @@ class CME_WebdebugImage extends CME_Plugin {
 						}
 					}
 				} elseif ($TargetPropertyID>0) {
-					$arProp = $cwda->GetPropertyFromArrayById($arElement['PROPERTIES'],$TargetPropertyID);
+					$arProp = $cme->GetPropertyFromArrayById($arElement['PROPERTIES'],$TargetPropertyID);
 					if ($arProp['MULTIPLE']!='Y' && is_array($Value)) {
 						$Value = $Value[0];
 						$Value = self::ProcessImages($ProfileID,$Value);
