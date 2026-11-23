@@ -216,7 +216,7 @@ class CME_Profile {
 	private static function GetAvailableFields() {
 		$PHPCache = new CPHPCache;
 		$CacheLifeTime = 60*60;
-		$CacheID = 'CME_Profile__GetAvailableFields';
+		$CacheID = 'CWDA_Profile__GetAvailableFields';
 		if($PHPCache->InitCache($CacheLifeTime, $CacheID, '/')) {
 			$arResult = $PHPCache->GetVars();
 		} else {

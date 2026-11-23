@@ -164,7 +164,7 @@ class CME_SetValues extends CME_Plugin {
 						return response.text();
 						})
 						.then(function(html) {
-							CME_SetHTML(settings, html);
+							CWDA_SetHTML(settings, html);
 							settings.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
 								if (BX.adminFormTools && BX.adminFormTools.modifyCheckbox) BX.adminFormTools.modifyCheckbox(checkbox);
 							});
