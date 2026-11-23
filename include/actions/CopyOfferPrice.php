@@ -5,22 +5,22 @@ class CME_CopyOfferPrice extends CME_Plugin {
 	CONST NAME = 'ТП: установка цены из родительского товара';
 	//
 	static function GetDescription() {
-        $cwda = new CWDA;
+        $cme = new CME;
 		$Descr = 'Плагин устанавливает цену торгового предложения копированием из родительского товара.';
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
 	static function GetMessage($Code, $ConvertCharset=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		$MESS = array(
 			'ALERT_NO_FIELD_PRICE' => 'Укажите тип цены для копирования',
 			'PRICE_TARGET' => 'Тип цен',
 		);
 		$MESS = trim($MESS[$Code]);
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
@@ -73,7 +73,7 @@ class CME_CopyOfferPrice extends CME_Plugin {
 	static function Process($ElementID, $arElement, $Params) {
 		$bResult = false;
 		$IBlockElement = new CIBlockElement;
-        $cwda = new CWDA;
+        $cme = new CME;
 		$PriceTarget = preg_replace('#^CATALOG_PRICE_(\d+)$#i','$1',$Params['price_target']);
 		$OffersIBlockID = $arElement['IBLOCK_ID'];
 		if($OffersIBlockID>0 && $PriceTarget>0) {
@@ -85,7 +85,7 @@ class CME_CopyOfferPrice extends CME_Plugin {
 						if($ProductID>0){
 							$resProduct = CIBlockElement::GetList(array(),array('ID'=>$ProductID,'IBLOCK_ID'=>$arCatalog['PRODUCT_IBLOCK_ID']),false,false,array('ID','CATALOG_GROUP_'.$PriceTarget));
 							if($arProduct = $resProduct->GetNext(false,false)){
-                                $cwda->SetProductPrice($ElementID, $PriceTarget, $arProduct['CATALOG_PRICE_'.$PriceTarget], $arProduct['CATALOG_CURRENCY_'.$PriceTarget]);
+                                $cme->SetProductPrice($ElementID, $PriceTarget, $arProduct['CATALOG_PRICE_'.$PriceTarget], $arProduct['CATALOG_CURRENCY_'.$PriceTarget]);
 							}
 						}
 						break;

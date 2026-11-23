@@ -11,7 +11,7 @@ CModule::AddAutoloadClasses(
 	)
 );
 
-class CWDA {
+class CME {
 	
 	/**
 	 *	Check UTF-8 mode
@@ -620,7 +620,7 @@ class CWDA {
 		}
 		$arDeclaredClasses = get_declared_classes();
 		foreach($arDeclaredClasses as $ClassName) {
-			if (stripos($ClassName,'CME_')===0 && !in_array($ClassName,array('CWDA','CME_Plugin')) && method_exists($ClassName,'WDA_PLUGIN')) {
+			if (stripos($ClassName,'CME_')===0 && !in_array($ClassName,array('CME','CME_Plugin')) && method_exists($ClassName,'WDA_PLUGIN')) {
 				$Group = $ClassName::GetGroup();
 				$Code = $ClassName::GetCode();
 				$Name = $ClassName::GetName();
@@ -682,7 +682,7 @@ class CWDA {
 	}
 	
 	function Process($Data, $Params){
-        $cwda = new CWDA;
+        $cme = new CME;
 		$Filter = $Data['FILTER'];
 		$Action = $Data['ACTION'];
 		$MaxTime = IntVal($Data['MAX_TIME']);
@@ -709,7 +709,7 @@ class CWDA {
 				if ($TimeCurrent-$TimeStart>=$MaxTime) {
 					return 1;
 				}
-				$arElement = $cwda->GetElementByID($arItem['ID']);
+				$arElement = $cme->GetElementByID($arItem['ID']);
 				$bResult = $Class::Process($arItem['ID'], $arElement, $Params);
 				$_SESSION['WDA_DONE_'.$Action['CODE']]++;
 				if ($bResult) {
@@ -935,7 +935,7 @@ class CWDA {
 	 */
 	public static function WdaCheckCli() {
 		$bSuccess = true;
-        $cwda = new CWDA;
+        $cme = new CME;
 		// Get php.exe
 		if(DIRECTORY_SEPARATOR=='/') {
 			exec('which php',$Result);
@@ -947,20 +947,20 @@ class CWDA {
 			$PhpExe = $Result[0];
 		}
 		unset($Result);
-		$PhpExe = $cwda->ReplaceDirectorySeparators($PhpExe);
+		$PhpExe = $cme->ReplaceDirectorySeparators($PhpExe);
 		// Get php.ini
 		$PhpIni = false;
 		$ModulePath = $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'.WDA_MODULE;
 		if(is_file($ModulePath.'/php.ini')) {
 			$PhpIni = $ModulePath.'/php.ini';
 		}
-		$PhpIni = $cwda->ReplaceDirectorySeparators($PhpIni);
+		$PhpIni = $cme->ReplaceDirectorySeparators($PhpIni);
 		// Get check file
 		$CheckFile = false;
 		if(is_file($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'.WDA_MODULE.'/include/cli_check.php')) {
 			$CheckFile = $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'.WDA_MODULE.'/include/cli_check.php';
 		}
-		$CheckFile = $cwda->ReplaceDirectorySeparators($CheckFile);
+		$CheckFile = $cme->ReplaceDirectorySeparators($CheckFile);
 		//
 		if(is_file($PhpExe) && is_file($CheckFile)) {
 			if(strpos($PhpExe,' ')!==false) {
@@ -996,7 +996,7 @@ class CWDA {
 	 *	Запуск процесса из планировщика
 	 */
 	public static function CronExec($Arguments){
-        $cwda = new CWDA;
+        $cme = new CME;
 		unset($Arguments[0]);
 		$arParams = array(); // array like a $_GET
 		foreach($Arguments as $Argument){
@@ -1015,8 +1015,8 @@ class CWDA {
 					if($IBlockID>0) {
 						$Action = $arProfile['ACTION'];
 						if(!empty($Action)) {
-							$arActions = $cwda->GetActionsList();
-							$Action = $cwda->GetAction($Action,$arActions);
+							$arActions = $cme->GetActionsList();
+							$Action = $cme->GetAction($Action,$arActions);
 							if(is_array($Action)){
 								$Class = $Action['CLASS'];
 								$arSectionsID = array_filter(explode(',',$arProfile['SECTIONS_ID']));
@@ -1034,10 +1034,10 @@ class CWDA {
 								unset($arActionParams['params']);
 								$arActionParams = array_merge($arActionParams, $arActionParamsFirst);
 								//
-								$FilterFields = $cwda->GetAllFields($IBlockID);
-								$FilterParams = $cwda->CollectFilter($arFilterData['f_p2'],$arFilterData['f_e2'],$arFilterData['f_v2']);
-								$FilterResult = $cwda->BuildFilter($IBlockID, $arSectionsID, $arProfile['WITH_SUBSECTIONS']=='Y'?true:false, $FilterParams, $FilterFields);
-								$Count = $cwda->GetCount($FilterResult);
+								$FilterFields = $cme->GetAllFields($IBlockID);
+								$FilterParams = $cme->CollectFilter($arFilterData['f_p2'],$arFilterData['f_e2'],$arFilterData['f_v2']);
+								$FilterResult = $cme->BuildFilter($IBlockID, $arSectionsID, $arProfile['WITH_SUBSECTIONS']=='Y'?true:false, $FilterParams, $FilterFields);
+								$Count = $cme->GetCount($FilterResult);
 								//
 								$SuccessCount = 0;
 								$FailedCount = 0;
@@ -1047,7 +1047,7 @@ class CWDA {
 								$GLOBALS['WDA_FIRST'] = true;
 								$resItems = CIBlockElement::GetList(array('ID'=>'ASC'),$FilterResult,false,false,array('ID'));
 								while ($arItem = $resItems->GetNext()) {
-									$arElement = $cwda->GetElementByID($arItem['ID']);
+									$arElement = $cme->GetElementByID($arItem['ID']);
 									$bResult = $Class::Process($arItem['ID'], $arElement, $arActionParams);
 									unset($GLOBALS['WDA_START']);
 									unset($GLOBALS['WDA_FIRST']);

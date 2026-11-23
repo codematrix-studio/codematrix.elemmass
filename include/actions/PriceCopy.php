@@ -6,9 +6,9 @@ class CME_PriceCopy extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин копирует цены из одного поля в другое. Поддерживаются: свойства инфоблока (типа «Строка» и «Число», с некоторыми производными), цены торгового каталога, а также закупочная цена. Операция копирования возможна в любых сочетаниях (напр., из свойства в оптовую цену, или из закупочной цены в розничную).';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -45,9 +45,9 @@ class CME_PriceCopy extends CME_Plugin {
 			'CATALOG_PURCHASING_PRICE' => 'Закупочная цена',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
@@ -116,7 +116,7 @@ class CME_PriceCopy extends CME_Plugin {
 		return $arResult;
 	}
 	static function FormatPrice($Price, $Format) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		$Format = str_replace("][", "]\n[", $Format);
 		$arFormat = explode("\n",$Format);
 		if (is_array($arFormat)) {
@@ -129,25 +129,25 @@ class CME_PriceCopy extends CME_Plugin {
 			}
 			$Price = number_format($Price,$arFormat[3],$arFormat[2],$arFormat[1]);
 			$Format = str_replace('#',$Price,$arFormat[0]);
-			if (!$cwda->IsUtf()) {
-				$Format = $cwda->ConvertCharset($Format,'UTF-8','CP1251');
+			if (!$cme->IsUtf()) {
+				$Format = $cme->ConvertCharset($Format,'UTF-8','CP1251');
 			}
 			return $Format;
 		}
 		return '';
 	}
 	static function ShowSettings($IBlockID=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		?>
 		<div id="wda_settings_<?=self::CODE?>">
 			<div class="wda_settings_header"><?=self::GetMessage('FIELD_SOURCE');?></div>
 			<div>
-				<div><select name="params[field_source]" id="wda_field_source" class="wda_select_field"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_SOURCE_PRICE'));?></div>
+				<div><select name="params[field_source]" id="wda_field_source" class="wda_select_field"></select><?=$cme->ShowHint(self::GetMessage('SELECT_SOURCE_PRICE'));?></div>
 			</div>
 			<br/>
 			<div class="wda_settings_header"><?=self::GetMessage('FIELD_TARGET');?></div>
 			<div>
-				<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_PRICE_TARGET'));?></div>
+				<div><select name="params[field_target]" id="wda_field_target" class="wda_select_field"></select><?=$cme->ShowHint(self::GetMessage('SELECT_PRICE_TARGET'));?></div>
 			</div>
 			<br/>
 			<div class="wda_settings_header"><?=self::GetMessage('PROP_GROUP_ADDITIONAL_SETTINGS');?></div>
@@ -160,7 +160,7 @@ class CME_PriceCopy extends CME_Plugin {
 							</td>
 							<td class="label" colspan="2">
 								<label for="wda_checkbox_not_empty"><?=self::GetMessage('PARAM_NOT_EMPTY');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_PARAM_NOT_EMPTY'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_PARAM_NOT_EMPTY'));?>
 							</td>
 						</tr>
 						<tr>
@@ -169,7 +169,7 @@ class CME_PriceCopy extends CME_Plugin {
 							</td>
 							<td class="label">
 								<label for="wda_checkbox_round"><?=self::GetMessage('PARAM_ROUND');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_PARAM_ROUND'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_PARAM_ROUND'));?>
 							</td>
 							<td class="value">
 								<select name="params[round_value]">
@@ -183,7 +183,7 @@ class CME_PriceCopy extends CME_Plugin {
 							</td>
 							<td class="label">
 								<label for="wda_checkbox_format"><?=self::GetMessage('PARAM_FORMAT');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_PARAM_FORMAT'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_PARAM_FORMAT'));?>
 							</td>
 							<td class="value">
 								<?$arFormats = self::GetPriceFormats();?>
@@ -200,10 +200,10 @@ class CME_PriceCopy extends CME_Plugin {
 							</td>
 							<td class="label">
 								<label for="wda_checkbox_currency"><?=self::GetMessage('PARAM_CURRENCY');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_PARAM_CURRENCY'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_PARAM_CURRENCY'));?>
 							</td>
 							<td class="value">
-								<?$arCurrencies = $cwda->GetCurrencyList();?>
+								<?$arCurrencies = $cme->GetCurrencyList();?>
 								<select name="params[currency_value]">
 									<?foreach($arCurrencies as $arCurrency):?>
 										<option value="<?=$arCurrency['CURRENCY'];?>"><?=$arCurrency['FULL_NAME'];?></option>
@@ -219,7 +219,7 @@ class CME_PriceCopy extends CME_Plugin {
 	}
 	static function Process($ElementID, $arElement, $Params) {
 		$bResult = false;
-        $cwda = new CWDA;
+        $cme = new CME;
 		// Source
 		$SourcePriceID = false;
 		if(preg_match('#^CATALOG_PRICE_(\d+)$#i',$Params['field_source'],$M)) {
@@ -254,7 +254,7 @@ class CME_PriceCopy extends CME_Plugin {
 				$PriceRaw = FloatVal($arElement['CATALOG_PRICE_'.$SourcePriceID]);
 				$SourceCurrency = $arElement['CATALOG_CURRENCY_'.$SourcePriceID];
 			} elseif ($SourcePropertyID) {
-				$arProp = $cwda->GetPropertyFromArrayById($arElement['PROPERTIES'], $SourcePropertyID);
+				$arProp = $cme->GetPropertyFromArrayById($arElement['PROPERTIES'], $SourcePropertyID);
 				$PriceRaw = $arProp['VALUE'];
 				if (is_array($PriceRaw) && !empty($PriceRaw)) {
 					foreach($PriceRaw as $PriceRawItem) {
@@ -273,12 +273,12 @@ class CME_PriceCopy extends CME_Plugin {
 				}
 			}
 			if ($Params['not_empty']=='Y' && $PriceRaw==0) {
-                $cwda->Log('Skip empty price for element #'.$ElementID, self::CODE);
+                $cme->Log('Skip empty price for element #'.$ElementID, self::CODE);
 				return true;
 			}
 			$Price = $PriceRaw;
 			if ($Params['round']=='Y' && $TargetPropertyID===false) {
-				$Price = $cwda->RoundEx($Price, IntVal($Params['round_value']));
+				$Price = $cme->RoundEx($Price, IntVal($Params['round_value']));
 			}
 			if ($TargetPropertyID>0) {
 				if ($Params['currency']=='Y' && strlen($SourceCurrency) && CModule::IncludeModule('currency')) {
@@ -288,13 +288,13 @@ class CME_PriceCopy extends CME_Plugin {
 					}
 				}
 				if ($Params['round']=='Y') {
-					$Price = $cwda->RoundEx($Price, IntVal($Params['round_value']));
+					$Price = $cme->RoundEx($Price, IntVal($Params['round_value']));
 				}
 				if ($Params['format']=='Y') {
 					$Price = self::FormatPrice($Price, $Params['format_value']);
 				}
 				CIBlockElement::SetPropertyValuesEx($ElementID, $arElement['IBLOCK_ID'], array($TargetPropertyID=>$Price));
-                $cwda->Log('Set price ['.$Price.'] for element #'.$ElementID.' to property #'.$TargetPropertyID, self::CODE);
+                $cme->Log('Set price ['.$Price.'] for element #'.$ElementID.' to property #'.$TargetPropertyID, self::CODE);
 				$bResult = true;
 			} elseif ($TargetPriceID>0) {
 				$Currency = 'RUB';
@@ -302,15 +302,15 @@ class CME_PriceCopy extends CME_Plugin {
 					$Currency = $SourceCurrency;
 				} elseif ($Params['currency']=='Y' && CModule::IncludeModule('currency')) {
 					$Currency = $Params['currency_value'];
-					$arCurrencies = $cwda->GetCurrencyList();
+					$arCurrencies = $cme->GetCurrencyList();
 					if (isset($arCurrencies[$Params['currency_value']])) {
 						$Currency = $Params['currency_value'];
 					}
 				}
-				if ($cwda->SetProductPrice($ElementID, $TargetPriceID, $Price, $Currency)) {
+				if ($cme->SetProductPrice($ElementID, $TargetPriceID, $Price, $Currency)) {
 					$bResult = true;
 				}
-                $cwda->Log('Set price ['.$Price.'] for element #'.$ElementID.' to price #'.$TargetPriceID, self::CODE);
+                $cme->Log('Set price ['.$Price.'] for element #'.$ElementID.' to price #'.$TargetPriceID, self::CODE);
 			} elseif ($TargetPurchasing) {
 				if (CModule::IncludeModule('catalog')) {
 					$Currency = 'RUB';
@@ -318,7 +318,7 @@ class CME_PriceCopy extends CME_Plugin {
 						$Currency = $SourceCurrency;
 					} elseif ($Params['currency']=='Y' && CModule::IncludeModule('currency')) {
 						$Currency = $Params['currency_value'];
-						$arCurrencies = $cwda->GetCurrencyList();
+						$arCurrencies = $cme->GetCurrencyList();
 						if (isset($arCurrencies[$Params['currency_value']])) {
 							$Currency = $Params['currency_value'];
 						}
@@ -329,10 +329,10 @@ class CME_PriceCopy extends CME_Plugin {
 						'PURCHASING_CURRENCY' => $Currency,
 					);
 					if (CCatalogProduct::Add($arFields)) {
-                        $cwda->Log('Set price ['.$Price.'] for element #'.$ElementID.' to price #'.$TargetPriceID, self::CODE);
+                        $cme->Log('Set price ['.$Price.'] for element #'.$ElementID.' to price #'.$TargetPriceID, self::CODE);
 						$bResult = true;
 					} else {
-                        $cwda->Log('Error update '.$Target.' for element #'.$ElementID.', fields: '.print_r($arFields,1));
+                        $cme->Log('Error update '.$Target.' for element #'.$ElementID.', fields: '.print_r($arFields,1));
 					}
 				}
 			}

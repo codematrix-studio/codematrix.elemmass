@@ -6,9 +6,9 @@ class CME_LinkSection extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин выполняет операции по переносу элементов в заданный раздел, а также по добавлению привязки к заданному разделу.';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -22,9 +22,9 @@ class CME_LinkSection extends CME_Plugin {
 				'SELECT_SECTION_EMPTY' => '--- выберите раздел ---',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}

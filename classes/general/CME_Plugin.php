@@ -11,11 +11,11 @@ abstract class CME_Plugin {
 		return static::CODE;
 	}
 	static function GetName(){
-        $cwda = new CWDA;
-		if ($cwda->IsUtf()) {
+        $cme = new CME;
+		if ($cme->IsUtf()) {
 			return static::NAME;
 		} else {
-			return $cwda->ConvertCharset(static::NAME);
+			return $cme->ConvertCharset(static::NAME);
 		}
 	}
 	//

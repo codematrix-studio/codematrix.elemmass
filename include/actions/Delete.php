@@ -6,9 +6,9 @@ class CME_Delete extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин для удаления элементов инфоблока.';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -19,9 +19,9 @@ class CME_Delete extends CME_Plugin {
 	}
 	static function Process($ElementID, $arElement, $Params) {
 		$bResult = false;
-        $cwda = new CWDA;
+        $cme = new CME;
 		if(CIBlockElement::Delete($ElementID)) {
-            $cwda->Log('Delete element #'.$ElementID, self::CODE);
+            $cme->Log('Delete element #'.$ElementID, self::CODE);
 			$bResult = true;
 		}
 		return $bResult;

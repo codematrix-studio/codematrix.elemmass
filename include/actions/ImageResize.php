@@ -6,9 +6,9 @@ class CME_ImageResize extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин для уменьшения больших картинок. Поддерживаются поля «Картинка для анонса» и «Детальная картинка», а также свойства инфоблока типа «Файл».';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -38,9 +38,9 @@ class CME_ImageResize extends CME_Plugin {
 			'SOURCE_EMPTY' => '--- инфоблок не выбран ---',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
@@ -94,7 +94,7 @@ class CME_ImageResize extends CME_Plugin {
 		<?
 	}
 	static function ShowSettings($IBlockID=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		?>
 		<div id="wda_settings_<?=self::CODE?>">
 			<div class="wda_settings_header"><?=self::GetMessage('PROP_GROUP_1');?></div>
@@ -107,7 +107,7 @@ class CME_ImageResize extends CME_Plugin {
 						<tr>
 							<td class="label">
 								<label for="wda_checkbox_method"><?=self::GetMessage('PROP_METHOD');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_METHOD'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_METHOD'));?>
 							</td>
 							<td class="value">
 								<select name="params[method]" id="wda_select_method">
@@ -120,7 +120,7 @@ class CME_ImageResize extends CME_Plugin {
 						<tr>
 							<td class="label">
 								<label for="wda_input_width"><?=self::GetMessage('PROP_WIDTH');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_WIDTH'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_WIDTH'));?>
 							</td>
 							<td class="value">
 								<input type="text" name="params[width_value]" value="1000" size="5" id="wda_input_width" data-int="Y" maxlength="5" /> <span>px</span>
@@ -129,7 +129,7 @@ class CME_ImageResize extends CME_Plugin {
 						<tr>
 							<td class="label">
 								<label for="wda_input_height"><?=self::GetMessage('PROP_HEIGHT');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_HEIGHT'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_HEIGHT'));?>
 							</td>
 							<td class="value">
 								<input type="text" name="params[height_value]" value="1000" size="5" id="wda_input_height" data-int="Y" maxlength="5" /> <span>px</span>
@@ -138,7 +138,7 @@ class CME_ImageResize extends CME_Plugin {
 						<tr>
 							<td class="label">
 								<label for="wda_checkbox_sharpen"><?=self::GetMessage('PROP_SHARPEN');?></label>
-								<?=$cwda->ShowHint(self::GetMessage('HINT_SHARPEN'));?>
+								<?=$cme->ShowHint(self::GetMessage('HINT_SHARPEN'));?>
 							</td>
 							<td class="value">
 								<input type="checkbox" name="params[sharpen]" value="Y" id="wda_checkbox_sharpen" checked="checked" />
@@ -208,10 +208,10 @@ class CME_ImageResize extends CME_Plugin {
 		}
 		$arUpdateFields = array();
 		$arUpdateProperties = array();
-        $cwda = new CWDA;
+        $cme = new CME;
 		foreach($Params['field_source'] as $SourceField) {
 			if(preg_match('#^PROPERTY_(\d+)$#i',$SourceField,$M)) {
-				$arProp = $cwda->GetPropertyFromArrayById($arElement['PROPERTIES'],$M[1]);
+				$arProp = $cme->GetPropertyFromArrayById($arElement['PROPERTIES'],$M[1]);
 				if (is_array($arProp)) {
 					$Value = $arProp['VALUE'];
 					$Images = self::ResizeAll($Value, $Params);
@@ -235,14 +235,14 @@ class CME_ImageResize extends CME_Plugin {
 		if (!empty($arUpdateFields)){
 			$IBlockElement = new CIBlockElement;
 			if ($IBlockElement->Update($ElementID,$arUpdateFields)) {
-				$cwda->Log('Resize '.$SourceField.' for element #'.$ElementID, self::CODE);
+				$cme->Log('Resize '.$SourceField.' for element #'.$ElementID, self::CODE);
 				$bResult = true;
 			}
 		}
 		if (!empty($arUpdateProperties)){
 			foreach($arUpdateProperties as $PropertyID => $PropertyValue) {
 				CIBlockElement::SetPropertyValuesEx($ElementID, $arElement['IBLOCK_ID'], array($PropertyID=>$PropertyValue));
-                $cwda->Log('Resize properties pictures for element #'.$ElementID, self::CODE);
+                $cme->Log('Resize properties pictures for element #'.$ElementID, self::CODE);
 				$bResult = true;
 			}
 		}
