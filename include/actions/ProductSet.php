@@ -49,86 +49,100 @@ class CWDA_ProductSet extends CWDA_Plugin {
 			}
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
-			if(WdaCurrentAction=='<?=self::CODE?>'){
-				// Check products count
-				var FilledProducts = 0;
-				$('#wda_product_set_products table tbody tr:visible').each(function(){
-					var ID = parseInt($(this).find('td.product input[type=text]').val());
-					if(!isNaN(ID) && ID>0) {
-						FilledProducts++;
+			if(WdaCurrentAction!='<?=self::CODE?>') return;
+			var products = document.getElementById('wda_product_set_products');
+			if (!products) return;
+			var visibleRows = Array.from(products.querySelectorAll('table tbody tr')).filter(function(row) {
+				return row.getClientRects().length > 0;
+			});
+			var filledProducts = visibleRows.filter(function(row) {
+				var input = row.querySelector('td.product input[type="text"]');
+				var id = input ? parseInt(input.value, 10) : NaN;
+				return !isNaN(id) && id > 0;
+			}).length;
+			if (filledProducts === 0) {
+				alert('<?=self::GetMessage('ALERT_EMPTY_PRODUCTS',true);?>');
+				WdaCanSubmit = false;
+			}
+			if (WdaCanSubmit !== false) {
+				visibleRows.forEach(function(row) {
+					var productInput = row.querySelector('td.product input[type="text"]');
+					var quantityInput = row.querySelector('td.quantity input[type="text"]');
+					if (productInput && productInput.value.length > 0 && (!quantityInput || quantityInput.value.trim().length === 0)) {
+						alert('<?=self::GetMessage('ALERT_QUANTITY_EMPTY',true);?>');
+						WdaCanSubmit = false;
 					}
 				});
-				if(FilledProducts==0) {
-					alert('<?=self::GetMessage('ALERT_EMPTY_PRODUCTS',true);?>');
-					WdaCanSubmit = false;
-				}
-				// Check quantity
-				if(WdaCanSubmit!=false) {
-					$('#wda_product_set_products table tbody td.product:visible input[type=text]').each(function(){
-						if($(this).val().length>0 && $.trim($(this).closest('tr').find('td.quantity input[type=text]').val()).length==0) {
-							alert('<?=self::GetMessage('ALERT_QUANTITY_EMPTY',true);?>');
-							WdaCanSubmit = false;
-						}
+			}
+			if (WdaCanSubmit !== false) {
+				var bundleRadio = document.querySelector('#wda_product_set_type input[type="radio"][value="1"]:checked');
+				if (bundleRadio) {
+					var percent = 0;
+					visibleRows.forEach(function(row) {
+						var input = row.querySelector('td.percent input[type="text"]');
+						if (!input) return;
+						var value = parseInt(input.value, 10);
+						if (isNaN(value) || value < 0) value = 0;
+						percent += value;
 					});
-				}
-				// Check percent
-				if(WdaCanSubmit!=false) {
-					var IsBundle = $('#wda_product_set_type input[type=radio][value=1]').is(':checked');
-					if (IsBundle) {
-						var Percent = 0;
-						$('#wda_product_set_products table tbody td.percent:visible input[type=text]').each(function(){
-							var Value = parseInt($(this).val());
-							if(isNaN(Value) || Value<0) {
-								Value = 0;
-							}
-							Percent += Value;
-						});
-						if(Percent>100) {
-							alert('<?=self::GetMessage('ALERT_PERCENT_TOO_MUCH',true);?>');
-							WdaCanSubmit = false;
-						}
+					if (percent > 100) {
+						alert('<?=self::GetMessage('ALERT_PERCENT_TOO_MUCH',true);?>');
+						WdaCanSubmit = false;
 					}
 				}
 			}
 		});
-		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var IBlock = $('#wda_select_iblock').val();
-			// Target
-			var SelectTarget = $('#wda_price_target').html(Select.html());
-			SelectTarget.find('optgroup').not('optgroup[data-group=PRICES]').remove();
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_price_target');
+			if (!source || !target) return;
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (group.getAttribute('data-group') !== 'PRICES') group.remove();
+			});
+			target.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 		function WDA_<?=self::CODE?>_RecalculateCount(){
-			var Count = $('#wda_product_set_products tbody tr').length;
-			$('#wda_product_set_products').attr('data-count',Count);
+			var products = document.getElementById('wda_product_set_products');
+			if (products) products.setAttribute('data-count', products.querySelectorAll('tbody tr').length);
 		}
-		$(document).delegate('#wda_product_set_type input[type=radio]','change',function(){
-			var CheckedRadio = $('#wda_product_set_type input[type=radio]:checked');
-			if(CheckedRadio.length==1) {
-				$('#wda_product_set_products').removeClass('type_1 type_2').addClass('type_'+$(this).val());
-			}
-		}).delegate('#wda_product_set_product_add','click',function(){
-			var TBody = $('#wda_product_set_products tbody').first();
-			var TR = TBody.children('tr').first();
-			var TR_New = TR.clone().css('display','');
-			TBody.append(TR_New);
-			WDA_<?=self::CODE?>_RecalculateCount();
-		}).delegate('#wda_product_set_products tbody td.delete input','click',function(){
-			var TR = $(this).closest('tr');
-			TR.remove();
-			WDA_<?=self::CODE?>_RecalculateCount();
+		document.addEventListener('change', function(event) {
+			if (!event.target.matches('#wda_product_set_type input[type="radio"]')) return;
+			var products = document.getElementById('wda_product_set_products');
+			if (!products) return;
+			products.classList.remove('type_1', 'type_2');
+			products.classList.add('type_' + event.target.value);
 		});
-		//
-		function SelectProductPopupCallback(Product, IBlockID){
-			var Caller = $(window.SelectProductPopupCaller);
-			if(Caller.length==1) {
-				var TD = Caller.closest('td');
-				TD.find('input[type=text]').val(Product.id);
-				TD.find('.product_name').html(Product.name);
+		document.addEventListener('click', function(event) {
+			var addButton = event.target.closest('#wda_product_set_product_add');
+			if (addButton) {
+				var body = document.querySelector('#wda_product_set_products tbody');
+				var firstRow = body && body.querySelector('tr');
+				if (body && firstRow) {
+					var newRow = firstRow.cloneNode(true);
+					newRow.style.display = '';
+					body.appendChild(newRow);
+					WDA_<?=self::CODE?>_RecalculateCount();
+				}
+				return;
 			}
-			window.SelectProductPopup.Close();
+			var deleteButton = event.target.closest('#wda_product_set_products tbody td.delete input');
+			if (deleteButton) {
+				var row = deleteButton.closest('tr');
+				if (row) row.remove();
+				WDA_<?=self::CODE?>_RecalculateCount();
+			}
+		});
+		function SelectProductPopupCallback(Product, IBlockID){
+			var caller = window.SelectProductPopupCaller;
+			if (caller && caller.nodeType === 1) {
+				var cell = caller.closest('td');
+				var input = cell && cell.querySelector('input[type="text"]');
+				var name = cell && cell.querySelector('.product_name');
+				if (input) input.value = Product.id;
+				if (name) name.textContent = Product.name;
+			}
+			if (window.SelectProductPopup) window.SelectProductPopup.Close();
 		}
 		function ShowSelectProductPopup(Caller){
 			window.SelectProductPopup = new BX.CDialog({
@@ -142,7 +156,7 @@ class CWDA_ProductSet extends CWDA_Plugin {
 			});
 			BX.addCustomEvent(window.SelectProductPopup, 'onWindowRegister', BX.defer(function(){
 				window.SelectProductPopup.Get().style.position = 'fixed';
-				window.SelectProductPopup.Get().style.top = (parseInt(window.SelectProductPopup.Get().style.top) - BX.GetWindowScrollPos().scrollTop) + 'px';
+				window.SelectProductPopup.Get().style.top = (parseInt(window.SelectProductPopup.Get().style.top, 10) - BX.GetWindowScrollPos().scrollTop) + 'px';
 			}));
 			window.SelectProductPopupCaller = Caller;
 			window.SelectProductPopup.Show();

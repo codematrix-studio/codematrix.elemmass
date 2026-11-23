@@ -75,23 +75,31 @@ class CWDA_CodeGeneration extends CWDA_Plugin {
 			}
 		});
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var SelectSource = $('#wda_field_source').html(Select.html());
-			var IBlockID = $('#wda_select_iblock').val();
-			if (IBlockID>0) {
-				SelectSource.find('optgroup').not('optgroup[data-group=FIELDS]').not('optgroup[data-group=PROPERTIES]').remove();
-				SelectSource.find('option').not('[data-type^=N]').not('[data-type=S]').remove();
-				SelectSource.find('option').filter('[value=CODE],[value=SHOW_COUNTER]').remove();
-				SelectSource.val('NAME').change();
-				var CodeProps = window['IBlock_'+IBlockID]['CODE']['DEFAULT_VALUE'];
-				WDA_SetCheckboxValue('#wda_checkbox_translit',CodeProps.TRANSLITERATION);
-				WDA_SetCheckboxValue('#wda_checkbox_unique',CodeProps.UNIQUE);
-				WDA_SetCheckboxValue('#wda_checkbox_removeextra',CodeProps.TRANS_EAT);
-				$('#wda_select_case').val(CodeProps.TRANS_CASE);
-				$('#wda_input_length').val(CodeProps.TRANS_LEN);
-				$('#wda_input_space').val(CodeProps.TRANS_SPACE);
-				$('#wda_input_specsymbols').val(CodeProps.TRANS_OTHER);
-			}
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_source');
+			var iblockSelect = document.getElementById('wda_select_iblock');
+			var IBlockID = iblockSelect ? iblockSelect.value : '';
+			if (!source || !target || parseInt(IBlockID, 10) <= 0) return;
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (['FIELDS', 'PROPERTIES'].indexOf(group.getAttribute('data-group')) === -1) group.remove();
+			});
+			target.querySelectorAll('option').forEach(function(option) {
+				var type = option.getAttribute('data-type') || '';
+				if (type.charAt(0) !== 'N' && type !== 'S' || ['CODE', 'SHOW_COUNTER'].indexOf(option.value) !== -1) option.remove();
+			});
+			target.value = 'NAME';
+			target.dispatchEvent(new Event('change', { bubbles: true }));
+			var iblockData = window['IBlock_' + IBlockID];
+			if (!iblockData || !iblockData.CODE || !iblockData.CODE.DEFAULT_VALUE) return;
+			var CodeProps = iblockData.CODE.DEFAULT_VALUE;
+			WDA_SetCheckboxValue('#wda_checkbox_translit', CodeProps.TRANSLITERATION);
+			WDA_SetCheckboxValue('#wda_checkbox_unique', CodeProps.UNIQUE);
+			WDA_SetCheckboxValue('#wda_checkbox_removeextra', CodeProps.TRANS_EAT);
+			[['wda_select_case', CodeProps.TRANS_CASE], ['wda_input_length', CodeProps.TRANS_LEN], ['wda_input_space', CodeProps.TRANS_SPACE], ['wda_input_specsymbols', CodeProps.TRANS_OTHER]].forEach(function(pair) {
+				var field = document.getElementById(pair[0]);
+				if (field) field.value = pair[1];
+			});
 		}
 		</script>
 		<?

@@ -42,7 +42,8 @@ class CWDA_ReplaceText extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				 if ($.trim($('#wda_field_target').val())=='') {
+				 var targetField = document.getElementById('wda_field_target');
+				if (!targetField || targetField.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_FIELD_TARGET',true);?>');
 					WdaCanSubmit = false;
 				}
@@ -50,21 +51,26 @@ class CWDA_ReplaceText extends CWDA_Plugin {
 		});
 		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var IBlock = $('#wda_select_iblock').val();
-			// Target
-			var SelectTarget = $('#wda_field_target').html(Select.html()); // Property
-			SelectTarget.find('optgroup').not('optgroup[data-group=FIELDS]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectTarget.find('optgroup[data-group=FIELDS] option').not('[value=NAME],[value=CODE],[value=PREVIEW_TEXT],[value=DETAIL_TEXT],[value=EXTERNAL_ID],[value=XML_ID],[value=TAGS]').remove();
-			SelectTarget.find('optgroup[data-group=PROPERTIES] option').not('[data-type=S],[data-type="S:HTML"]').remove();
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_target');
+			if (!source || !target) return;
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (['FIELDS', 'PROPERTIES'].indexOf(group.getAttribute('data-group')) === -1) group.remove();
+			});
+			var allowedFields = ['NAME', 'CODE', 'PREVIEW_TEXT', 'DETAIL_TEXT', 'EXTERNAL_ID', 'XML_ID', 'TAGS'];
+			target.querySelectorAll('optgroup[data-group="FIELDS"] option').forEach(function(option) {
+				if (allowedFields.indexOf(option.value) === -1) option.remove();
+			});
+			target.querySelectorAll('optgroup[data-group="PROPERTIES"] option').forEach(function(option) {
+				if (['S', 'S:HTML'].indexOf(option.getAttribute('data-type')) === -1) option.remove();
+			});
+			target.dispatchEvent(new Event('change', { bubbles: true }));
 		}
-		$('#wda_checkbox_use_regexp input[type=checkbox]').live('change',function(){
-			if($(this).is(':checked')) {
-				$('#wda_case_sensitive').hide();
-			} else {
-				$('#wda_case_sensitive').show();
-			}
+		document.addEventListener('change', function(event) {
+			if (!event.target.matches('#wda_checkbox_use_regexp input[type="checkbox"]')) return;
+			var caseSensitive = document.getElementById('wda_case_sensitive');
+			if (caseSensitive) caseSensitive.style.display = event.target.checked ? 'none' : '';
 		});
 		</script>
 		<?

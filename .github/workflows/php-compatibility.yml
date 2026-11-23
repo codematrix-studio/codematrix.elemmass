@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - main
+      - feature/vanilla-js-migration
+      - v2-development
   pull_request:
     branches:
       - main
+      - v2-development
   workflow_dispatch:
 
 jobs:
@@ -39,5 +42,17 @@ jobs:
 
       - name: Check JavaScript syntax
         run: |
-          node --check install/js/codematrix.elemmass/codematrix.elemmass.app.js
           node --check install/js/codematrix.elemmass/codematrix.elemmass.js
+
+      - name: Check JavaScript embedded in PHP actions
+        run: |
+          node .github/scripts/check-inline-js.js
+
+      - name: Ensure module has no jQuery runtime references
+        run: |
+          if grep -RInE --include='*.js' '(jQuery|jquery|window[.][$]|[$][[:space:]]*[(]|[$][.](ajax|trim|each|extend|post|get))' . || grep -RInE --include='*.php' '(jQuery|window[.][$]|[$][[:space:]]*[(]|[$][.](ajax|trim|each|extend|post|get))' .; then
+            echo "jQuery references remain in module source."
+            exit 1
+          fi
+          test ! -e install/js/codematrix.elemmass/codematrix.elemmass.app.js
+          test ! -e install/js/codematrix.elemmass/vendor/jquery-1.12.4.min.js

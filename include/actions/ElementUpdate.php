@@ -31,7 +31,7 @@ class CWDA_ElementUpdate extends CWDA_Plugin {
 		<script>
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if($('#wda_settings_<?=self::CODE?> input[type=checkbox]:checked').length==0) {
+				if (document.querySelectorAll('#wda_settings_<?=self::CODE?> input[type="checkbox"]:checked').length === 0) {
 					alert('<?=self::GetMessage('ALERT_NOTHING_SELECTED',true);?>');
 					WdaCanSubmit = false;
 				}
