@@ -1024,9 +1024,11 @@ class CWDA {
 									$arActionParams = array();
 								}
 								//
-								$arActionParamsFirst = $arActionParams['params'];
+								$arActionParamsFirst = isset($arActionParams['params']) && is_array($arActionParams['params'])
+									? $arActionParams['params']
+									: array();
 								unset($arActionParams['params']);
-								$arActionParams = array_merge($arActionParams,$arActionParamsFirst);
+								$arActionParams = array_merge($arActionParams, $arActionParamsFirst);
 								//
 								$FilterFields = $cwda->GetAllFields($IBlockID);
 								$FilterParams = $cwda->CollectFilter($arFilterData['f_p2'],$arFilterData['f_e2'],$arFilterData['f_v2']);
