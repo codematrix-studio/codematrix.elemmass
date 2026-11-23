@@ -204,12 +204,14 @@ class CWDA_Logger extends CWDA_Plugin {
 		fclose($Handle);
 	}
 	static function EscapeTxt($Value){
+		$Value = is_scalar($Value) ? (string)$Value : '';
 		$Value = str_replace("\n",'\n',$Value);
 		$Value = str_replace("\r",'',$Value);
 		$Value = str_replace("\t",'',$Value);
 		return $Value;
 	}
 	static function EscapeCsv($Value){
+		$Value = is_scalar($Value) ? (string)$Value : '';
 		$Value = '"'.str_replace('"','""',$Value).'"';
 		return $Value;
 	}
