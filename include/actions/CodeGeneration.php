@@ -258,6 +258,10 @@ class CWDA_CodeGeneration extends CWDA_Plugin {
 					}
 				}
 			}
+			if (is_array($Value)) {
+				$Value = reset($Value);
+			}
+			$Value = is_scalar($Value) ? (string)$Value : '';
 			if ($Params['trim']=='Y') {
 				$Value = trim($Value);
 			}
