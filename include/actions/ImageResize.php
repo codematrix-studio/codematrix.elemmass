@@ -144,8 +144,8 @@ class CWDA_ImageResize extends CWDA_Plugin {
 		<?
 	}
 	static function NeedResize($Value, $Width, $Height) {
-		if ($ImageID>0) {
-			$arImage = CFile::GetFileArray($ImageID);
+		if ($Value>0) {
+			$arImage = CFile::GetFileArray($Value);
 			if ($arImage['WIDTH']>$Width || $arImage['HEIGHT']>$Height) {
 				return true;
 			}
@@ -227,7 +227,7 @@ class CWDA_ImageResize extends CWDA_Plugin {
 		if (!empty($arUpdateFields)){
 			$IBlockElement = new CIBlockElement;
 			if ($IBlockElement->Update($ElementID,$arUpdateFields)) {
-                $cwda->Log('Resize '.$SourceField.' for element #'.$ElementID.' ['.$arUpdateFields['DETAIL_PICTURE']['SRC'].']', self::CODE);
+				$cwda->Log('Resize '.$SourceField.' for element #'.$ElementID, self::CODE);
 				$bResult = true;
 			}
 		}
