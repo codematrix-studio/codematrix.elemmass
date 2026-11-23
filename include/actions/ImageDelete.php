@@ -6,9 +6,9 @@ class CME_ImageDelete extends CME_Plugin {
 	//
 	static function GetDescription() {
 		$Descr = 'Плагин для удаления изображений и файлов из полей и свойств элементов инфоблоков.';
-        $cwda = new CWDA;
-		if (!$cwda->IsUtf()) {
-			$Descr = $cwda->ConvertCharset($Descr);
+        $cme = new CME;
+		if (!$cme->IsUtf()) {
+			$Descr = $cme->ConvertCharset($Descr);
 		}
 		return $Descr;
 	}
@@ -19,9 +19,9 @@ class CME_ImageDelete extends CME_Plugin {
 			'ALERT_NO_SOURCE' => 'Укажите в каком поле/свойстве нужно удалить изображение или файл.',
 		);
 		$MESS = trim($MESS[$Code]);
-        $cwda = new CWDA;
-		if ($ConvertCharset && !$cwda->IsUtf()) {
-			$MESS = $cwda->ConvertCharset($MESS);
+        $cme = new CME;
+		if ($ConvertCharset && !$cme->IsUtf()) {
+			$MESS = $cme->ConvertCharset($MESS);
 		}
 		return $MESS;
 	}
@@ -77,12 +77,12 @@ class CME_ImageDelete extends CME_Plugin {
 		<?
 	}
 	static function ShowSettings($IBlockID=false) {
-        $cwda = new CWDA;
+        $cme = new CME;
 		?>
 		<div id="wda_settings_<?=self::CODE?>">
 			<div class="wda_settings_header"><?=self::GetMessage('PROP_GROUP_1');?></div>
 			<div>
-				<div><select name="params[field_source][]" id="wda_field_source" class="wda_select_field" multiple="multiple" size="8"></select><?=$cwda->ShowHint(self::GetMessage('SELECT_SOURCE_PRICE'));?></div>
+				<div><select name="params[field_source][]" id="wda_field_source" class="wda_select_field" multiple="multiple" size="8"></select><?=$cme->ShowHint(self::GetMessage('SELECT_SOURCE_PRICE'));?></div>
 			</div>
 			<br/>
 		</div>
