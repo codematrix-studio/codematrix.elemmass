@@ -43,12 +43,16 @@ class CWDA {
 		if (strlen($ActionCode)) {
 			$Message = '['.$ActionCode.'] '.$Message;
 		}
-		if (defined(LOG_FILENAME) && strlen(LOG_FILENAME)>0) {
-			$LogFileName = LOG_FILENAME;
+		if (defined('LOG_FILENAME') && strlen((string)constant('LOG_FILENAME'))>0) {
+			$LogFileName = constant('LOG_FILENAME');
 		} else {
-			$LogFileName = $_SERVER['DOCUMENT_ROOT'].'/log_'.COption::GetOptionString('main','server_uniq_id').'.log';
+			$DocumentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/\\\\') : '';
+			$LogFileName = $DocumentRoot.'/log_'.COption::GetOptionString('main','server_uniq_id').'.log';
 		}
 		$Handle = @fopen($LogFileName, 'a+');
+		if ($Handle===false) {
+			return;
+		}
 		@flock($Handle, LOCK_EX);
 		@fwrite($Handle, '['.date('d.m.Y H:i:s').'] '.$Message."\r\n");
 		@flock($Handle, LOCK_UN);
