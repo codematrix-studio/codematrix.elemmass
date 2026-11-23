@@ -1,5 +1,5 @@
 <?
-class CWDA_LinkSection extends CWDA_Plugin {
+class CME_LinkSection extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'LINK_SECTION';
 	CONST NAME = 'Привязки к разделам';

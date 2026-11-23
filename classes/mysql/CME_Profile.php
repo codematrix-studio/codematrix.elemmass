@@ -1,7 +1,7 @@
 <?
 IncludeModuleLangFile(__FILE__);
 
-class CWDA_Profile {
+class CME_Profile {
 	const MYSQL_DATE_FORMAT = 'YYYY-MM-DD HH:MI:SS';
 	
 	// Получение списка профилей
@@ -216,7 +216,7 @@ class CWDA_Profile {
 	private static function GetAvailableFields() {
 		$PHPCache = new CPHPCache;
 		$CacheLifeTime = 60*60;
-		$CacheID = 'CWDA_Profile__GetAvailableFields';
+		$CacheID = 'CME_Profile__GetAvailableFields';
 		if($PHPCache->InitCache($CacheLifeTime, $CacheID, '/')) {
 			$arResult = $PHPCache->GetVars();
 		} else {

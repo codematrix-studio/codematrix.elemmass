@@ -1,5 +1,5 @@
 <?
-class CWDA_ReplaceText extends CWDA_Plugin {
+class CME_ReplaceText extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'REPLACE_TEXT';
 	CONST NAME = 'Замена в тексте';

@@ -1,5 +1,5 @@
 <?
-class CWDA_SetValues extends CWDA_Plugin {
+class CME_SetValues extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'SET_VALUES';
 	CONST NAME = 'Заполнение значений';
@@ -164,7 +164,7 @@ class CWDA_SetValues extends CWDA_Plugin {
 						return response.text();
 						})
 						.then(function(html) {
-							CWDA_SetHTML(settings, html);
+							CME_SetHTML(settings, html);
 							settings.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
 								if (BX.adminFormTools && BX.adminFormTools.modifyCheckbox) BX.adminFormTools.modifyCheckbox(checkbox);
 							});

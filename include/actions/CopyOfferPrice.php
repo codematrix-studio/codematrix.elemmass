@@ -1,5 +1,5 @@
 <?
-class CWDA_CopyOfferPrice extends CWDA_Plugin {
+class CME_CopyOfferPrice extends CME_Plugin {
 	CONST GROUP = 'PRICES';
 	CONST CODE = 'COPY_OFFER_PRICE';
 	CONST NAME = 'ТП: установка цены из родительского товара';

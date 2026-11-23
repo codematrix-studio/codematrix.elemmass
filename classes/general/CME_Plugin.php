@@ -1,7 +1,7 @@
 <?
 IncludeModuleLangFile(__FILE__);
 
-abstract class CWDA_Plugin {
+abstract class CME_Plugin {
 	final function WDA_PLUGIN(){return true;}
 	//
 	static function GetGroup(){

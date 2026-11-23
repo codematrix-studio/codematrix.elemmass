@@ -1,5 +1,5 @@
 <?
-class CWDA_ImageCopy extends CWDA_Plugin {
+class CME_ImageCopy extends CME_Plugin {
 	CONST GROUP = 'IMAGES';
 	CONST CODE = 'IMAGE_COPY';
 	CONST NAME = 'Копирование изображений';

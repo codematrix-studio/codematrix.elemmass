@@ -6,8 +6,8 @@ IncludeModuleLangFile(__FILE__);
 CModule::AddAutoloadClasses(
 	WDA_MODULE,
 	array(
-		'CWDA_Plugin' => 'classes/general/CWDA_Plugin.php',
-		'CWDA_Profile' => 'classes/'.$DBType.'/CWDA_Profile.php',
+		'CME_Plugin' => 'classes/general/CME_Plugin.php',
+		'CME_Profile' => 'classes/'.$DBType.'/CME_Profile.php',
 	)
 );
 
@@ -620,7 +620,7 @@ class CWDA {
 		}
 		$arDeclaredClasses = get_declared_classes();
 		foreach($arDeclaredClasses as $ClassName) {
-			if (stripos($ClassName,'CWDA_')===0 && !in_array($ClassName,array('CWDA','CWDA_Plugin')) && method_exists($ClassName,'WDA_PLUGIN')) {
+			if (stripos($ClassName,'CME_')===0 && !in_array($ClassName,array('CWDA','CME_Plugin')) && method_exists($ClassName,'WDA_PLUGIN')) {
 				$Group = $ClassName::GetGroup();
 				$Code = $ClassName::GetCode();
 				$Name = $ClassName::GetName();
@@ -1009,7 +1009,7 @@ class CWDA {
 		$DateStart = date(CDatabase::DateFormatToPHP(FORMAT_DATETIME));
 		if (CModule::IncludeModule('iblock')) {
 			if(is_numeric($arParams['profile']) && $arParams['profile']>0) {
-				$resProfile = CWDA_Profile::GetList(array(),array('ID'=>$arParams['profile']));
+				$resProfile = CME_Profile::GetList(array(),array('ID'=>$arParams['profile']));
 				if($arProfile = $resProfile->GetNext()){
 					$IBlockID = IntVal($arProfile['IBLOCK_ID']);
 					if($IBlockID>0) {
@@ -1057,7 +1057,7 @@ class CWDA {
 										$FailedCount++;
 									}
 								}
-								CWDA_Profile::SetFieldValue($arProfile['ID'],array('DATE_SUCCESS'=>date(CDatabase::DateFormatToPHP(CWDA_Profile::MYSQL_DATE_FORMAT))));
+								CME_Profile::SetFieldValue($arProfile['ID'],array('DATE_SUCCESS'=>date(CDatabase::DateFormatToPHP(CME_Profile::MYSQL_DATE_FORMAT))));
 								if($arProfile['SEND_EMAIL']=='Y') {
 									self::CreateEventType();
 									$arEventFields = array(

@@ -1,5 +1,5 @@
 <?
-class CWDA_ImageResize extends CWDA_Plugin {
+class CME_ImageResize extends CME_Plugin {
 	CONST GROUP = 'IMAGES';
 	CONST CODE = 'IMAGE_RESIZE';
 	CONST NAME = 'Ресайз изображений';

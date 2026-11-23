@@ -1,5 +1,5 @@
 <?
-class CWDA_ProductSet extends CWDA_Plugin {
+class CME_ProductSet extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'PRODUCT_SET';
 	CONST NAME = 'Создание наборов/комплектов';

@@ -1,5 +1,5 @@
 <?
-class CWDA_Delete extends CWDA_Plugin {
+class CME_Delete extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'DELETE';
 	CONST NAME = 'Удаление элементов';

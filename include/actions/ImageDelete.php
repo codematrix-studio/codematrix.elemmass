@@ -1,5 +1,5 @@
 <?
-class CWDA_ImageDelete extends CWDA_Plugin {
+class CME_ImageDelete extends CME_Plugin {
 	CONST GROUP = 'IMAGES';
 	CONST CODE = 'IMAGE_DELETE';
 	CONST NAME = 'Удаление изображений, файлов';

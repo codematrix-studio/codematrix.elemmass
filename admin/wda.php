@@ -351,7 +351,7 @@ if ($_GET['save_profile'] == 'Y') {
         'PARAMS' => UrlDecode(http_build_query($arActionParams)),
         'DATE_CREATED' => date(CDatabase::DateFormatToPHP(FORMAT_DATETIME)),
     );
-    $obProfile = new CWDA_Profile();
+    $obProfile = new CME_Profile();
     $ProfileID = $obProfile->Add($arProfile);
     if ($ProfileID > 0) {
         $arResult['SUCCESS'] = true;
@@ -384,7 +384,7 @@ $APPLICATION->AddHeadString('<script>var WdaComparisonTypes=' . $arComparisonTyp
 
 <?
 $arSubMenu = array();
-$resProfiles = CWDA_Profile::GetList(array('SORT' => 'ASC', 'NAME' => 'ASC'), array(), 1000);
+$resProfiles = CME_Profile::GetList(array('SORT' => 'ASC', 'NAME' => 'ASC'), array(), 1000);
 while ($arProfile = $resProfiles->GetNext()) {
     $arJson = $arProfile;
     if (!$cwda->IsUtf()) {

@@ -1,5 +1,5 @@
 <?
-class CWDA_PriceCopy extends CWDA_Plugin {
+class CME_PriceCopy extends CME_Plugin {
 	CONST GROUP = 'PRICES';
 	CONST CODE = 'PRICE_COPY';
 	CONST NAME = 'Копирование цен';
