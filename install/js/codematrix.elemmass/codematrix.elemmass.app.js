@@ -1,9 +1,24 @@
-/* CodeMatrix Elemmass uses an isolated jQuery 1.12.4 instance. */
+/* CodeMatrix Elemmass uses the bundled jQuery 1.12.4 instance. */
 (function(window, document) {
-    if (!window.jQuery || typeof window.jQuery.noConflict !== 'function') {
+    if (!window.jQuery || typeof window.jQuery.fn !== 'object') {
         throw new Error('CodeMatrix Elemmass: bundled jQuery failed to load.');
     }
-    var cmJQuery = window.jQuery.noConflict(true);
+    var cmJQuery = window.jQuery;
+
+    // Restore the legacy .live() API used by this module on jQuery 1.12.
+    if (!cmJQuery.fn.live) {
+        cmJQuery.fn.live = function(types, data, handler) {
+            var selector = this.selector;
+            var context = this.context || document;
+            if (selector) {
+                cmJQuery(context).on(types, selector, data, handler);
+            } else {
+                this.on(types, data, handler);
+            }
+            return this;
+        };
+    }
+
     (function(window, document, jQuery, $) {
 jQuery.fn.Deserialize = function (DataRaw) {
 	function GetFieldType(Field){
