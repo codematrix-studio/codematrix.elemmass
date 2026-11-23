@@ -60,27 +60,35 @@ class CWDA_ImageResize extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if ($('#wda_input_width').val()=='') {
+				var inputWidth = document.getElementById('wda_input_width');
+				var inputHeight = document.getElementById('wda_input_height');
+				if (!inputWidth || inputWidth.value === '') {
 					WdaCanSubmit = false;
 					alert('<?=self::GetMessage('ALERT_NO_WIDTH',true);?>');
-				} else if ($('#wda_input_height').val()=='') {
+				} else if (!inputHeight || inputHeight.value === '') {
 					WdaCanSubmit = false;
 					alert('<?=self::GetMessage('ALERT_NO_HEIGHT',true);?>');
 				}
 			}
 		});
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var SelectSource = $('#wda_field_source').html(Select.html()).val('');
-			var IBlockID = $('#wda_select_iblock').val();
-			if (IBlockID>0) {
-				SelectSource.find('optgroup').not('optgroup[data-group=FIELDS]').not('optgroup[data-group=PROPERTIES]').remove();
-				SelectSource.find('option').not('[data-type=F]').remove();
-				SelectSource.val('DETAIL_PICTURE').change();
-			} 
-			if (SelectSource.val()==null) {
-				SelectSource.val('');
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_source');
+			var iblock = document.getElementById('wda_select_iblock');
+			if (!source || !target || !iblock) return;
+			target.innerHTML = source.innerHTML;
+			target.value = '';
+			if (parseInt(iblock.value, 10) > 0) {
+				target.querySelectorAll('optgroup').forEach(function(group) {
+					if (['FIELDS', 'PROPERTIES'].indexOf(group.getAttribute('data-group')) === -1) group.remove();
+				});
+				target.querySelectorAll('option').forEach(function(option) {
+					if (option.getAttribute('data-type') !== 'F') option.remove();
+				});
+				target.value = 'DETAIL_PICTURE';
 			}
+			if (target.value === null) target.value = '';
+			target.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 		</script>
 		<?

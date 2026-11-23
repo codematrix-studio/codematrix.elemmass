@@ -35,7 +35,8 @@ class CWDA_CopyOfferPrice extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				 if ($.trim($('#wda_price_target').val())=='') {
+				 var priceTarget = document.getElementById('wda_price_target');
+				if (!priceTarget || priceTarget.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_FIELD_PRICE',true);?>');
 					WdaCanSubmit = false;
 				}
@@ -43,12 +44,18 @@ class CWDA_CopyOfferPrice extends CWDA_Plugin {
 		});
 		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var IBlock = $('#wda_select_iblock').val();
-			// Target
-			var SelectTarget = $('#wda_price_target').html(Select.html());
-			SelectTarget.find('optgroup').not('optgroup[data-group=PRICES]').remove();
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_price_target');
+			if (!source || !target) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (group.getAttribute('data-group') !== 'PRICES') {
+					group.remove();
+				}
+			});
+			target.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 		</script>
 		<?

@@ -25,8 +25,7 @@ if (!CModule::IncludeModule('iblock')) {
 
 CJSCore::RegisterExt('codematrix.elemmass', array(
     'js' => array(
-        '/bitrix/js/codematrix.elemmass/vendor/jquery-1.12.4.min.js',
-        '/bitrix/js/codematrix.elemmass/codematrix.elemmass.app.js',
+        '/bitrix/js/codematrix.elemmass/codematrix.elemmass.js',
     ),
 ));
 CJSCore::Init(array('file_input', 'fileinput', 'codematrix.elemmass'));

@@ -44,13 +44,33 @@ class codematrix_elemmass extends CModule {
 		CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/js/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/js", true, true);
 		CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/themes/.default/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/themes/.default", true, true);
 		CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/admin/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin", true, true);
+		$this->RemoveLegacyAssets();
 		return true;
+	}
+
+	function RemoveLegacyAssets() {
+		$moduleJsPath = $_SERVER["DOCUMENT_ROOT"]."/bitrix/js/".$this->MODULE_ID."/";
+		$legacyFiles = array(
+			$moduleJsPath."codematrix.elemmass.app.js",
+			$moduleJsPath."vendor/jquery-1.12.4.min.js",
+			$moduleJsPath."vendor/LICENSE.txt"
+		);
+		foreach ($legacyFiles as $legacyFile) {
+			if (is_file($legacyFile)) {
+				@unlink($legacyFile);
+			}
+		}
+		$vendorDirectory = $moduleJsPath."vendor";
+		if (is_dir($vendorDirectory)) {
+			@rmdir($vendorDirectory);
+		}
 	}
 	
 	function UnInstallFiles($SaveTemplate=true) {
 		DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/js/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/js");
 		DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/themes/.default/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/themes/.default/");
 		DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/admin/", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");
+		$this->RemoveLegacyAssets();
 		return true;
 	}
 

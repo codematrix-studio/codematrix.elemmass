@@ -54,13 +54,16 @@ class CWDA_WebdebugImage extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if ($('#wda_field_source').val()=='') {
+				var sourceValue = document.getElementById('wda_field_source');
+				var targetValue = document.getElementById('wda_field_target');
+				var profileValue = document.getElementById('wda_field_wd_image_profile');
+				if (!sourceValue || sourceValue.value === '') {
 					WdaCanSubmit = false;
 					alert('<?=self::GetMessage('ALERT_NO_SOURCE',true);?>');
-				} else if ($('#wda_field_target').val()=='') {
+				} else if (!targetValue || targetValue.value === '') {
 					WdaCanSubmit = false;
 					alert('<?=self::GetMessage('ALERT_NO_TARGET',true);?>');
-				} else if ($('#wda_field_wd_image_profile').val()=='') {
+				} else if (!profileValue || profileValue.value === '') {
 					WdaCanSubmit = false;
 					alert('<?=self::GetMessage('ALERT_NO_PROFILE_SELECTED',true);?>');
 				}
@@ -68,17 +71,40 @@ class CWDA_WebdebugImage extends CWDA_Plugin {
 		});
 		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			// Source
-			var SelectSource = $('#wda_field_source').html(Select.html());
-			SelectSource.find('optgroup').not('optgroup[data-group=FIELDS]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectSource.find('optgroup option').not('[data-type=F]').remove();
-			SelectSource.change();
-			// Target
-			var SelectTarget = $('#wda_field_target').html(Select.html());
-			SelectTarget.find('optgroup').not('optgroup[data-group=FIELDS]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectTarget.find('optgroup option').not('[data-type=F]').remove();
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_source');
+			if (!source || !target) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (["FIELDS","PROPERTIES"].indexOf(group.getAttribute('data-group')) === -1) {
+					group.remove();
+				}
+			});
+			target.querySelectorAll('optgroup option').forEach(function(option) {
+				if (option.getAttribute('data-type') !== 'F') {
+					option.remove();
+				}
+			});
+			target.dispatchEvent(new Event('change', { bubbles: true }));
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_target');
+			if (!source || !target) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (["FIELDS","PROPERTIES"].indexOf(group.getAttribute('data-group')) === -1) {
+					group.remove();
+				}
+			});
+			target.querySelectorAll('optgroup option').forEach(function(option) {
+				if (option.getAttribute('data-type') !== 'F') {
+					option.remove();
+				}
+			});
+			target.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 		//
 		</script>

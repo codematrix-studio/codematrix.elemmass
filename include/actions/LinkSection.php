@@ -44,13 +44,24 @@ class CWDA_LinkSection extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if($('#wda_select_link_section').val().length==0) {
+				var linkSection = document.getElementById('wda_select_link_section');
+				if (!linkSection || linkSection.value.length === 0) {
 					WdaCanSubmit = false;
 				}
 			}
 		});
 		function WDA_<?=self::CODE?>_Fill(){
-			$('#wda_select_link_section').html($('#wda_select_sections').html()).find('option[value=""]').text('<?=self::GetMessage('SELECT_SECTION_EMPTY',true);?>').addClass('empty');
+			var target = document.getElementById('wda_select_link_section');
+			var source = document.getElementById('wda_select_sections');
+			if (!target || !source) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			var emptyOption = target.querySelector('option[value=""]');
+			if (emptyOption) {
+				emptyOption.textContent = '<?=self::GetMessage('SELECT_SECTION_EMPTY',true);?>';
+				emptyOption.classList.add('empty');
+			}
 		}
 		</script>
 		<style>

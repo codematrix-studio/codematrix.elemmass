@@ -62,10 +62,12 @@ class CWDA_PriceCopy extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if ($.trim($('#wda_field_source').val())=='') {
+				var priceSource = document.getElementById('wda_field_source');
+				var priceTarget = document.getElementById('wda_field_target');
+				if (!priceSource || priceSource.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_PRICE_SOURCE',true);?>');
 					WdaCanSubmit = false;
-				} else if ($.trim($('#wda_field_target').val())=='') {
+				} else if (!priceTarget || priceTarget.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_PRICE_TARGET',true);?>');
 					WdaCanSubmit = false;
 				}
@@ -73,20 +75,26 @@ class CWDA_PriceCopy extends CWDA_Plugin {
 		});
 		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			// Source
-			var SelectSource = $('#wda_field_source').html(Select.html()); // Price
-			SelectSource.find('optgroup').not('optgroup[data-group=PRICES]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectSource.find('optgroup[data-group=PROPERTIES] option').not('[data-type^=N]').not('[data-type=S]').remove();
-			SelectSource.find('optgroup[data-group=PRICES]').append('<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
-			SelectSource.change();
-			// Target
-			var SelectTarget = $('#wda_field_target').html(Select.html()); // Property
-			SelectTarget.find('optgroup').not('optgroup[data-group=PRICES]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectTarget.find('optgroup[data-group=PROPERTIES] option').not('[data-type^=N]').not('[data-type=S]').remove();
-			SelectTarget.find('[value=ID],[value=ACTIVE_DATE],[value=SECTION_GLOBAL_ACTIVE]').remove();
-			SelectTarget.find('optgroup[data-group=PRICES]').append('<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var sourceSelect = document.getElementById('wda_field_source');
+			var targetSelect = document.getElementById('wda_field_target');
+			if (!source || !sourceSelect || !targetSelect) return;
+			[sourceSelect, targetSelect].forEach(function(select) {
+				select.innerHTML = source.innerHTML;
+				select.querySelectorAll('optgroup').forEach(function(group) {
+					if (['PRICES', 'PROPERTIES'].indexOf(group.getAttribute('data-group')) === -1) group.remove();
+				});
+				select.querySelectorAll('optgroup[data-group="PROPERTIES"] option').forEach(function(option) {
+					var type = option.getAttribute('data-type') || '';
+					if (type.charAt(0) !== 'N' && type !== 'S') option.remove();
+				});
+				if (select === targetSelect) {
+					select.querySelectorAll('[value=ID], [value=ACTIVE_DATE], [value=SECTION_GLOBAL_ACTIVE]').forEach(function(option) { option.remove(); });
+				}
+				var prices = select.querySelector('optgroup[data-group="PRICES"]');
+				if (prices) prices.insertAdjacentHTML('beforeend', '<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
+				select.dispatchEvent(new Event('change', { bubbles: true }));
+			});
 		}
 		</script>
 		<?

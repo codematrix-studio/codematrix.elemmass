@@ -50,13 +50,20 @@ class CWDA_Logger extends CWDA_Plugin {
 		?>
 		<script>
 		function WDA_Params_Update_<?=self::CODE?>(){
-			WDA_<?=self::CODE?>_MoveElement($.trim(window.WdaProfileData.PARAMS.match(/params\[fields_selected\]\=([A-z0-9_,]+)$/i)[1]).split(','));
-			//$('#wda_fields_all option:selected').removeAttr('selected');
+			var params = window.WdaProfileData && window.WdaProfileData.PARAMS;
+			var match = params && params.match(/params\[fields_selected\]\=([A-z0-9_,]+)$/i);
+			if (match && match[1]) {
+				WDA_<?=self::CODE?>_MoveElement(match[1].trim().split(','));
+			}
 		}
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var FieldsAll = $('#wda_fields_all').html(Select.html()).find('option[value=""],option[value=ACTIVE_DATE],option[value=SECTION_GLOBAL_ACTIVE]').remove();
-			var IBlockID = $('#wda_select_iblock').val();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_fields_all');
+			if (!source || !target) return;
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('option[value=""], option[value="ACTIVE_DATE"], option[value="SECTION_GLOBAL_ACTIVE"]').forEach(function(option) {
+				option.remove();
+			});
 		}
 		BX.addCustomEvent('onWdaAfterIBlockChange', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
@@ -70,62 +77,75 @@ class CWDA_Logger extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if($('#wda_log_type').val()=='csv' && $('#wda_fields_selected option').length==0) {
+				var logType = document.getElementById('wda_log_type');
+				var selected = document.querySelectorAll('#wda_fields_selected option');
+				if(logType && logType.value=='csv' && selected.length==0) {
 					alert('<?=self::GetMessage('ALERT_CSV_NO_FIELDS_SELECTED',true);?>');
 					WdaCanSubmit = false;
 				}
 			}
 		});
 		function WDA_<?=self::CODE?>_MoveElement(Values){
-			var Select1 = $('#wda_fields_all');
-			var Select2 = $('#wda_fields_selected');
-			$.each(Values,function(Index,Value){
-				var OptionSource = Select1.find('option[value='+Value+']');
-				var OptionExists = Select2.find('option[value='+Value+']');
-				if(OptionExists.length==0) {
-					var Option = $('<option value="'+OptionSource.val()+'">'+OptionSource.text()+'</option>');
-					Select2.append(Option);
-				}
+			var source = document.getElementById('wda_fields_all');
+			var target = document.getElementById('wda_fields_selected');
+			if (!source || !target) return;
+			Values.forEach(function(value) {
+				var option = Array.from(source.options).find(function(item) { return item.value === String(value); });
+				var exists = Array.from(target.options).some(function(item) { return item.value === String(value); });
+				if (option && !exists) target.add(new Option(option.text, option.value));
 			});
 			WDA_<?=self::CODE?>_Serialize();
 		}
 		function WDA_<?=self::CODE?>_Serialize(){
-			var SelectedValues = [];
-			$('#wda_fields_selected option').each(function(){
-				SelectedValues.push($(this).val());
-			});
-			$('#wda_fields_serialized').val(SelectedValues.join(','));
+			var target = document.getElementById('wda_fields_selected');
+			var serialized = document.getElementById('wda_fields_serialized');
+			if (target && serialized) {
+				serialized.value = Array.from(target.options).map(function(option) { return option.value; }).join(',');
+			}
 		}
 		function WDA_<?=self::CODE?>_MoveRight(){
-			var Select1 = $('#wda_fields_all');
-			var Select2 = $('#wda_fields_selected');
-			var OptionSource = Select1.find('option:selected');
-			if(OptionSource.length>0){
-				var Values = [];
-				OptionSource.each(function(){
-					Values.push($(this).val());
-				});
-				WDA_<?=self::CODE?>_MoveElement(Values);
+			var source = document.getElementById('wda_fields_all');
+			if (!source) return;
+			var values = Array.from(source.selectedOptions).map(function(option) { return option.value; });
+			WDA_<?=self::CODE?>_MoveElement(values);
+		}
+		function WDA_<?=self::CODE?>_MoveUp(){
+			var target = document.getElementById('wda_fields_selected');
+			if (!target) return;
+			var selected = Array.from(target.selectedOptions);
+			if (selected.length && selected[0].previousElementSibling) {
+				var previous = selected[0].previousElementSibling;
+				var fragment = document.createDocumentFragment();
+				selected.forEach(function(option) { fragment.appendChild(option); });
+				target.insertBefore(fragment, previous);
 			}
 			WDA_<?=self::CODE?>_Serialize();
 		}
-		function WDA_<?=self::CODE?>_MoveUp(){
-			var OptionSource = $('#wda_fields_selected option:selected');
-			OptionSource.first().prev().before(OptionSource);
-			WDA_<?=self::CODE?>_Serialize();
-		}
 		function WDA_<?=self::CODE?>_MoveDown(){
-			var OptionSource = $('#wda_fields_selected option:selected');
-			OptionSource.last().next().after(OptionSource);
+			var target = document.getElementById('wda_fields_selected');
+			if (!target) return;
+			var selected = Array.from(target.selectedOptions);
+			if (selected.length) {
+				var last = selected[selected.length - 1];
+				var next = last.nextElementSibling;
+				if (next) {
+					var after = next.nextElementSibling;
+					var fragment = document.createDocumentFragment();
+					selected.forEach(function(option) { fragment.appendChild(option); });
+					target.insertBefore(fragment, after);
+				}
+			}
 			WDA_<?=self::CODE?>_Serialize();
 		}
 		function WDA_<?=self::CODE?>_Delete(){
-			var OptionSource = $('#wda_fields_selected option:selected');
-			OptionSource.remove();
+			var target = document.getElementById('wda_fields_selected');
+			if (!target) return;
+			Array.from(target.selectedOptions).forEach(function(option) { option.remove(); });
 			WDA_<?=self::CODE?>_Serialize();
 		}
 		function WDA_<?=self::CODE?>_TypeChange(Select){
-			$('#wda_settings_fields').css('display',($(Select).val()=='csv'?'':'none'));
+			var fields = document.getElementById('wda_settings_fields');
+			if (fields) fields.style.display = Select.value=='csv' ? '' : 'none';
 		}
 		</script>
 		<?

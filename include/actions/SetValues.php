@@ -88,26 +88,29 @@ class CWDA_SetValues extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				 if ($.trim($('#wda_field_target').val())=='') {
+				var target = document.getElementById('wda_field_target');
+				if (!target || target.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_FIELD_TARGET',true);?>');
 					WdaCanSubmit = false;
 				}
 			}
 		});
-		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			var IBlock = $('#wda_select_iblock').val();
-			// Target
-			var SelectTarget = $('#wda_field_target').html(Select.html()); // Property
-			SelectTarget.find('[value=ID],[value=ACTIVE_DATE],[value=SECTION_GLOBAL_ACTIVE],[value=CATALOG_AVAILABLE],[value=TIMESTAMP_X],[data-type=F],[data-type="S:Video"]').remove();
-			if (IBlock>0) {
-				SelectTarget.append('<optgroup label="<?=self::GetMessage('OPTGROUP_SEO',true);?>" data-group="SEO"></label>');
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_target');
+			var iblock = document.getElementById('wda_select_iblock');
+			if (!source || !target || !iblock) return;
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('[value=ID], [value=ACTIVE_DATE], [value=SECTION_GLOBAL_ACTIVE], [value=CATALOG_AVAILABLE], [value=TIMESTAMP_X], [data-type=F], [data-type="S:Video"]').forEach(function(option) {
+				option.remove();
+			});
+			if (parseInt(iblock.value, 10) > 0) {
+				var seoGroup = document.createElement('optgroup');
+				seoGroup.label = '<?=self::GetMessage('OPTGROUP_SEO',true);?>';
+				seoGroup.setAttribute('data-group', 'SEO');
+				target.appendChild(seoGroup);
 			}
-			SelectTarget.change();
-			// Add custom options
-			var CustomOptions = [
-				// Catalog
+			var customOptions = [
 				{VALUE:'CATALOG_PURCHASING_PRICE',NAME:'<?=self::GetMessage('OPTION_PURCHASING_PRICE',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_PURCHASING_PRICE',true);?>',TYPE:'P',GROUP:'PRICES'},
 				{VALUE:'CATALOG_QUANTITY_RESERVED',NAME:'<?=self::GetMessage('OPTION_QUANTITY_RESERVED',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_QUANTITY_RESERVED',true);?>',TYPE:'N',GROUP:'CATALOG'},
 				{VALUE:'CATALOG_QUANTITY_TRACE',NAME:'<?=self::GetMessage('OPTION_QUANTITY_TRACE',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_QUANTITY_TRACE',true);?>',TYPE:'L',GROUP:'CATALOG'},
@@ -120,42 +123,58 @@ class CWDA_SetValues extends CWDA_Plugin {
 				{VALUE:'CATALOG_HEIGHT',NAME:'<?=self::GetMessage('OPTION_HEIGHT',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_HEIGHT',true);?>',TYPE:'N:INT',GROUP:'CATALOG'},
 				{VALUE:'CATALOG_MEASURE',NAME:'<?=self::GetMessage('OPTION_MEASURE',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_MEASURE',true);?>',TYPE:'N:INT',GROUP:'CATALOG'},
 				{VALUE:'CATALOG_MEASURE_RATIO',NAME:'<?=self::GetMessage('OPTION_MEASURE_RATIO',true);?>',NAME_FULL:'<?=self::GetMessage('OPTION_MEASURE_RATIO',true);?>',TYPE:'N',GROUP:'CATALOG'},
-				// Stores
 				<?foreach($arStores as $arStore):?>
 				{VALUE:'<?=$arStore['WDA_CODE'];?>',NAME:'<?=$arStore['WDA_NAME'];?>',NAME_FULL:'<?=self::GetMessage('CATALOG_STORE',true);?> <?=$arStore['WDA_NAME_FULL'];?>',TYPE:'N',GROUP:'CATALOG'},
 				<?endforeach?>
-				// SEO
 				{VALUE:'SEO_ELEMENT_META_TITLE',NAME:'<?=self::GetMessage('SEO_ELEMENT_META_TITLE',true);?>',NAME_FULL:'<?=self::GetMessage('SEO_ELEMENT_META_TITLE',true);?>',TYPE:'S',GROUP:'SEO'},
 				{VALUE:'SEO_ELEMENT_META_KEYWORDS',NAME:'<?=self::GetMessage('SEO_ELEMENT_META_KEYWORDS',true);?>',NAME_FULL:'<?=self::GetMessage('SEO_ELEMENT_META_KEYWORDS',true);?>',TYPE:'S',GROUP:'SEO'},
 				{VALUE:'SEO_ELEMENT_META_DESCRIPTION',NAME:'<?=self::GetMessage('SEO_ELEMENT_META_DESCRIPTION',true);?>',NAME_FULL:'<?=self::GetMessage('SEO_ELEMENT_META_DESCRIPTION',true);?>',TYPE:'S',GROUP:'SEO'},
-				{VALUE:'SEO_ELEMENT_PAGE_TITLE',NAME:'<?=self::GetMessage('SEO_ELEMENT_PAGE_TITLE',true);?>',NAME_FULL:'<?=self::GetMessage('SEO_ELEMENT_PAGE_TITLE',true);?>',TYPE:'S',GROUP:'SEO'},
+				{VALUE:'SEO_ELEMENT_PAGE_TITLE',NAME:'<?=self::GetMessage('SEO_ELEMENT_PAGE_TITLE',true);?>',NAME_FULL:'<?=self::GetMessage('SEO_ELEMENT_PAGE_TITLE',true);?>',TYPE:'S',GROUP:'SEO'}
 			];
-			for(var i in CustomOptions) {
-				if (!CustomOptions.hasOwnProperty(i)) continue;
-				var Option = CustomOptions[i];
-				SelectTarget.find('optgroup[data-group='+Option.GROUP+']').append('<option value="'+Option.VALUE+'" data-name="'+Option.NAME+'" data-type="'+Option.TYPE+'" data-group="'+Option.GROUP+'">'+Option.NAME_FULL+'</option>')
-			}
-			// Move weight before length
-			$('#wda_field_target option[value=CATALOG_WEIGHT]').insertBefore('#wda_field_target option[value=CATALOG_LENGTH]').text('<?=self::GetMessage('OPTION_WEIGHT');?>');
-			// Event handlers
-			SelectTarget.on('change',function(){
-				window.GLOBAL_arMapObjects = undefined;
-				window.ymaps = undefined;
-				window.bYandexMapScriptsLoaded = undefined;
-				var TargetValue = $(this).val();
-				$('#wda_additional_settings_<?=self::CODE?>').html('<div class="loading"><?=self::GetMessage('LOADING',true);?></div>');
-				$.ajax({
-					url: '<?=$GLOBALS['APPLICATION']->GetCurPageParam('show_additional_settings=Y&action='.self::CODE,array('show_action_settings','show_additional_settings','ACTION','IBLOCK_ID'));?>&iblock_id='+$('#wda_select_iblock').val()+'&target='+TargetValue,
-					type: 'GET',
-					data: '',
-					success: function(HTML) {
-						$('#wda_additional_settings_<?=self::CODE?>').html(HTML).find('input[type=checkbox]').each(function(){
-							BX.adminFormTools.modifyCheckbox(this);
-						});
-						BX.onCustomEvent(window, 'wda_field_callback', [this, $('#wda_additional_settings_<?=self::CODE?>')]); 
-					}
-				});
+			customOptions.forEach(function(item) {
+				var group = target.querySelector('optgroup[data-group="' + item.GROUP + '"]');
+				if (!group) return;
+				var option = new Option(item.NAME_FULL, item.VALUE);
+				option.setAttribute('data-name', item.NAME);
+				option.setAttribute('data-type', item.TYPE);
+				option.setAttribute('data-group', item.GROUP);
+				group.appendChild(option);
 			});
+			var weight = target.querySelector('option[value="CATALOG_WEIGHT"]');
+			var length = target.querySelector('option[value="CATALOG_LENGTH"]');
+			if (weight && length && length.parentNode) {
+				length.parentNode.insertBefore(weight, length);
+				weight.textContent = '<?=self::GetMessage('OPTION_WEIGHT');?>';
+			}
+			if (!target.dataset.cwdaAdditionalSettingsBound) {
+				target.dataset.cwdaAdditionalSettingsBound = '1';
+				target.addEventListener('change', function() {
+					window.GLOBAL_arMapObjects = undefined;
+					window.ymaps = undefined;
+					window.bYandexMapScriptsLoaded = undefined;
+					var targetValue = target.value;
+					var settings = document.getElementById('wda_additional_settings_<?=self::CODE?>');
+					if (!settings) return;
+					settings.innerHTML = '<div class="loading"><?=self::GetMessage('LOADING',true);?></div>';
+					var url = '<?=$GLOBALS['APPLICATION']->GetCurPageParam('show_additional_settings=Y&action='.self::CODE,array('show_action_settings','show_additional_settings','ACTION','IBLOCK_ID'));?>' +
+						'&iblock_id=' + encodeURIComponent(iblock.value) + '&target=' + encodeURIComponent(targetValue);
+					fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+						.then(function(response) {
+							if (!response.ok) throw new Error('HTTP ' + response.status);
+						return response.text();
+						})
+						.then(function(html) {
+							CWDA_SetHTML(settings, html);
+							settings.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+								if (BX.adminFormTools && BX.adminFormTools.modifyCheckbox) BX.adminFormTools.modifyCheckbox(checkbox);
+							});
+							BX.onCustomEvent(window, 'wda_field_callback', [target, settings]);
+						})
+						.catch(function(error) {
+							console.error('CodeMatrix Elemmass: failed to load additional settings', error);
+						});
+				});
+			}
 		}
 		</script>
 		<style>

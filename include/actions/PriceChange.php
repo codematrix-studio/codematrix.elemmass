@@ -64,7 +64,8 @@ class CWDA_PriceChange extends CWDA_Plugin {
 		});
 		BX.addCustomEvent('onWdaBeforeSubmit', function(){
 			if(WdaCurrentAction=='<?=self::CODE?>'){
-				if ($.trim($('#wda_field_source').val())=='') {
+				var priceSource = document.getElementById('wda_field_source');
+				if (!priceSource || priceSource.value.trim() === '') {
 					alert('<?=self::GetMessage('ALERT_NO_PRICE_SOURCE',true);?>');
 					WdaCanSubmit = false;
 				}
@@ -72,20 +73,47 @@ class CWDA_PriceChange extends CWDA_Plugin {
 		});
 		//
 		function WDA_<?=self::CODE?>_Fill(){
-			var Select = $('#wda_filter_param');
-			// Source
-			var SelectSource = $('#wda_field_source').html(Select.html()); // Price
-			SelectSource.find('optgroup').not('optgroup[data-group=PRICES]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectSource.find('optgroup[data-group=PROPERTIES] option').not('[data-type^=N]').not('[data-type=S]').remove();
-			SelectSource.find('optgroup[data-group=PRICES]').append('<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
-			SelectSource.change();
-			// Target
-			var SelectTarget = $('#wda_field_target').html(Select.html()); // Property
-			SelectTarget.find('optgroup').not('optgroup[data-group=PRICES]').not('optgroup[data-group=PROPERTIES]').remove();
-			SelectTarget.find('optgroup[data-group=PROPERTIES] option').not('[data-type^=N]').not('[data-type=S]').remove();
-			SelectTarget.find('[value=ID],[value=ACTIVE_DATE],[value=SECTION_GLOBAL_ACTIVE]').remove();
-			SelectTarget.find('optgroup[data-group=PRICES]').append('<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
-			SelectTarget.change();
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_source');
+			if (!source || !target) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (["PRICES","PROPERTIES"].indexOf(group.getAttribute('data-group')) === -1) {
+					group.remove();
+				}
+			});
+			var sourceProperties = document.querySelectorAll('#wda_field_source optgroup[data-group="PROPERTIES"] option');
+			sourceProperties.forEach(function(option) {
+				var type = option.getAttribute('data-type') || '';
+				if (type.charAt(0) !== 'N' && type !== 'S') option.remove();
+			});
+			var sourcePrices = document.querySelector('#wda_field_source optgroup[data-group="PRICES"]');
+			if (sourcePrices) sourcePrices.insertAdjacentHTML('beforeend', '<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
+			target.dispatchEvent(new Event('change', { bubbles: true }));
+			var source = document.getElementById('wda_filter_param');
+			var target = document.getElementById('wda_field_target');
+			if (!source || !target) {
+				return;
+			}
+			target.innerHTML = source.innerHTML;
+			target.querySelectorAll('optgroup').forEach(function(group) {
+				if (["PRICES","PROPERTIES"].indexOf(group.getAttribute('data-group')) === -1) {
+					group.remove();
+				}
+			});
+			target.querySelectorAll('[value=ID], [value=ACTIVE_DATE], [value=SECTION_GLOBAL_ACTIVE]').forEach(function(option) {
+				option.remove();
+			});
+			var targetProperties = document.querySelectorAll('#wda_field_target optgroup[data-group="PROPERTIES"] option');
+			targetProperties.forEach(function(option) {
+				var type = option.getAttribute('data-type') || '';
+				if (type.charAt(0) !== 'N' && type !== 'S') option.remove();
+			});
+			var targetPrices = document.querySelector('#wda_field_target optgroup[data-group="PRICES"]');
+			if (targetPrices) targetPrices.insertAdjacentHTML('beforeend', '<option value="CATALOG_PURCHASING_PRICE" data-type="P"><?=self::GetMessage('CATALOG_PURCHASING_PRICE',true);?></option>');
+			document.getElementById('wda_field_target').dispatchEvent(new Event('change', { bubbles: true }));
 		}
 		</script>
 		<?
