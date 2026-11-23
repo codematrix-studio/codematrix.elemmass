@@ -101,6 +101,9 @@ class CWDA_ReplaceText extends CWDA_Plugin {
 		<?
 	}
 	static function Replace($From, $To, $Value, $bUseRegExp, $bCaseSensitive, $ElementID){
+		$From = is_scalar($From) ? (string)$From : '';
+		$To = is_scalar($To) ? (string)$To : '';
+		if ($Value===null) $Value = '';
 		$bValueIsArray = is_array($Value) && count($Value)==2 && in_array(ToUpper($Value['TYPE']),array('TEXT','HTML')) && isset($Value['TEXT']);
 		if($bUseRegExp) {
 			if($bValueIsArray) {
