@@ -1,0 +1,43 @@
+name: PHP compatibility
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  php-lint:
+    name: PHP syntax (${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.4', '8.1', '8.2', '8.3', '8.4', '8.5']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          ini-values: short_open_tag=On
+          coverage: none
+
+      - name: Check PHP syntax
+        run: |
+          find . -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check install/js/codematrix.elemmass/codematrix.elemmass.app.js
+          node --check install/js/codematrix.elemmass/codematrix.elemmass.js
