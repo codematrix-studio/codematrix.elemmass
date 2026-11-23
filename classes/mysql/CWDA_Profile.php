@@ -97,8 +97,12 @@ class CWDA_Profile {
 		if (empty($arFields['NAME'])) {
 			return false;
 		}
-		if (trim($arFields['DATE_CREATED'])!='') $arFields['DATE_CREATED'] = CDatabase::FormatDate($arFields['DATE_CREATED'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
-		if (trim($arFields['DATE_SUCCESS'])!='') $arFields['DATE_SUCCESS'] = CDatabase::FormatDate($arFields['DATE_SUCCESS'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		if (isset($arFields['DATE_CREATED']) && is_scalar($arFields['DATE_CREATED']) && trim((string)$arFields['DATE_CREATED'])!='') {
+			$arFields['DATE_CREATED'] = CDatabase::FormatDate($arFields['DATE_CREATED'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		}
+		if (isset($arFields['DATE_SUCCESS']) && is_scalar($arFields['DATE_SUCCESS']) && trim((string)$arFields['DATE_SUCCESS'])!='') {
+			$arFields['DATE_SUCCESS'] = CDatabase::FormatDate($arFields['DATE_SUCCESS'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		}
 		$SQL_Keys = array();
 		$SQL_Vals = array();
 		foreach ($arFields as $Key => $Field) {
@@ -135,8 +139,12 @@ class CWDA_Profile {
 		if (isset($arFields['NAME']) && empty($arFields['NAME'])) {
 			return false;
 		}
-		if (trim($arFields['DATE_CREATED'])!='') $arFields['DATE_CREATED'] = CDatabase::FormatDate($arFields['DATE_CREATED'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
-		if (trim($arFields['DATE_SUCCESS'])!='') $arFields['DATE_SUCCESS'] = CDatabase::FormatDate($arFields['DATE_SUCCESS'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		if (isset($arFields['DATE_CREATED']) && is_scalar($arFields['DATE_CREATED']) && trim((string)$arFields['DATE_CREATED'])!='') {
+			$arFields['DATE_CREATED'] = CDatabase::FormatDate($arFields['DATE_CREATED'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		}
+		if (isset($arFields['DATE_SUCCESS']) && is_scalar($arFields['DATE_SUCCESS']) && trim((string)$arFields['DATE_SUCCESS'])!='') {
+			$arFields['DATE_SUCCESS'] = CDatabase::FormatDate($arFields['DATE_SUCCESS'],FORMAT_DATETIME,self::MYSQL_DATE_FORMAT);
+		}
 		if(empty($arFields['DATE_SUCCESS'])) {
 			 unset($arFields['DATE_SUCCESS']);
 		}
