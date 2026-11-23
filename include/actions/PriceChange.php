@@ -1,5 +1,5 @@
 <?
-class CWDA_PriceChange extends CWDA_Plugin {
+class CME_PriceChange extends CME_Plugin {
 	CONST GROUP = 'PRICES';
 	CONST CODE = 'PRICE_CHANGE';
 	CONST NAME = 'Пересчет цен - наценки и скидки';

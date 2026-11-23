@@ -1,7 +1,7 @@
 <?
 IncludeModuleLangFile(__FILE__);
 
-class CWDA_Profile {
+class CME_Profile {
 	const MYSQL_DATE_FORMAT = 'YYYY-MM-DD HH:MI:SS';
 	
 	// Получение списка профилей

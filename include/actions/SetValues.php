@@ -1,5 +1,5 @@
 <?
-class CWDA_SetValues extends CWDA_Plugin {
+class CME_SetValues extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'SET_VALUES';
 	CONST NAME = 'Заполнение значений';

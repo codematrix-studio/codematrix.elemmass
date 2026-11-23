@@ -22,7 +22,7 @@
 ## 1. Генерация символьного кода
 
 - **Код действия:** `CODE_GENERATION`
-- **Класс:** `CWDA_CodeGeneration`
+- **Класс:** `CME_CodeGeneration`
 - **Группа:** Общие
 - **Файл:** `include/actions/CodeGeneration.php`
 
@@ -58,7 +58,7 @@
 ## 2. Заполнение значений
 
 - **Код действия:** `SET_VALUES`
-- **Класс:** `CWDA_SetValues`
+- **Класс:** `CME_SetValues`
 - **Группа:** Общие
 - **Файл:** `include/actions/SetValues.php`
 
@@ -92,7 +92,7 @@
 ## 3. Замена в тексте
 
 - **Код действия:** `REPLACE_TEXT`
-- **Класс:** `CWDA_ReplaceText`
+- **Класс:** `CME_ReplaceText`
 - **Группа:** Общие
 - **Файл:** `include/actions/ReplaceText.php`
 
@@ -125,7 +125,7 @@
 ## 4. Пересохранение элементов инфоблоков
 
 - **Код действия:** `ELEMENT_UPDATE`
-- **Класс:** `CWDA_ElementUpdate`
+- **Класс:** `CME_ElementUpdate`
 - **Группа:** Общие
 - **Файл:** `include/actions/ElementUpdate.php`
 
@@ -149,7 +149,7 @@
 ## 5. Удаление элементов
 
 - **Код действия:** `DELETE`
-- **Класс:** `CWDA_Delete`
+- **Класс:** `CME_Delete`
 - **Группа:** Общие
 - **Файл:** `include/actions/Delete.php`
 
@@ -162,7 +162,7 @@
 ## 6. Привязки к разделам
 
 - **Код действия:** `LINK_SECTION`
-- **Класс:** `CWDA_LinkSection`
+- **Класс:** `CME_LinkSection`
 - **Группа:** Общие
 - **Файл:** `include/actions/LinkSection.php`
 
@@ -188,7 +188,7 @@
 ## 7. Логирование в файл
 
 - **Код действия:** `LOGGER`
-- **Класс:** `CWDA_Logger`
+- **Класс:** `CME_Logger`
 - **Группа:** Общие
 - **Файл:** `include/actions/Logger.php`
 
@@ -219,7 +219,7 @@
 ## 8. Пересчет цен — наценки и скидки
 
 - **Код действия:** `PRICE_CHANGE`
-- **Класс:** `CWDA_PriceChange`
+- **Класс:** `CME_PriceChange`
 - **Группа:** Цены
 - **Файл:** `include/actions/PriceChange.php`
 
@@ -259,7 +259,7 @@
 ## 9. Копирование цен
 
 - **Код действия:** `PRICE_COPY`
-- **Класс:** `CWDA_PriceCopy`
+- **Класс:** `CME_PriceCopy`
 - **Группа:** Цены
 - **Файл:** `include/actions/PriceCopy.php`
 
@@ -288,7 +288,7 @@
 ## 10. ТП: установка цены из родительского товара
 
 - **Код действия:** `COPY_OFFER_PRICE`
-- **Класс:** `CWDA_CopyOfferPrice`
+- **Класс:** `CME_CopyOfferPrice`
 - **Группа:** Цены
 - **Файл:** `include/actions/CopyOfferPrice.php`
 
@@ -309,7 +309,7 @@
 ## 11. Копирование изображений
 
 - **Код действия:** `IMAGE_COPY`
-- **Класс:** `CWDA_ImageCopy`
+- **Класс:** `CME_ImageCopy`
 - **Группа:** Изображения
 - **Файл:** `include/actions/ImageCopy.php`
 
@@ -333,7 +333,7 @@
 ## 12. Удаление изображений и файлов
 
 - **Код действия:** `IMAGE_DELETE`
-- **Класс:** `CWDA_ImageDelete`
+- **Класс:** `CME_ImageDelete`
 - **Группа:** Изображения
 - **Файл:** `include/actions/ImageDelete.php`
 
@@ -350,7 +350,7 @@
 ## 13. Ресайз изображений
 
 - **Код действия:** `IMAGE_RESIZE`
-- **Класс:** `CWDA_ImageResize`
+- **Класс:** `CME_ImageResize`
 - **Группа:** Изображения
 - **Файл:** `include/actions/ImageResize.php`
 
@@ -373,7 +373,7 @@
 ## 14. Создание наборов/комплектов
 
 - **Код действия:** `PRODUCT_SET`
-- **Класс:** `CWDA_ProductSet`
+- **Класс:** `CME_ProductSet`
 - **Группа:** Общие
 - **Файл:** `include/actions/ProductSet.php`
 
@@ -399,7 +399,7 @@
 ## 15. Обработка модулем «Обработчик изображений»
 
 - **Код действия:** `WEBDEBUG_IMAGE`
-- **Класс:** `CWDA_WebdebugImage`
+- **Класс:** `CME_WebdebugImage`
 - **Группа:** Изображения
 - **Файл:** `include/actions/WebdebugImage.php`
 

@@ -1,5 +1,5 @@
 <?
-class CWDA_ElementUpdate extends CWDA_Plugin {
+class CME_ElementUpdate extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'ELEMENT_UPDATE';
 	CONST NAME = 'Пересохранение элементов инфоблоков';

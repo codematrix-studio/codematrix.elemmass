@@ -49,9 +49,9 @@ if($lAdmin->EditAction()) {
 		if(!$lAdmin->IsUpdated($ID)) continue;
 		$DB->StartTransaction();
 		$ID = IntVal($ID);
-		if(($rsData = CWDA_Profile::GetByID($ID)) && ($arData = $rsData->Fetch())) {
+		if(($rsData = CME_Profile::GetByID($ID)) && ($arData = $rsData->Fetch())) {
 			foreach($arFields as $key=>$value) $arData[$key]=$value;
-			if(!CWDA_Profile::Update($ID, $arData)) {
+			if(!CME_Profile::Update($ID, $arData)) {
 				$lAdmin->AddGroupError(GetMessage("rub_save_error"), $ID);
 				$DB->Rollback();
 			}
@@ -64,7 +64,7 @@ if($lAdmin->EditAction()) {
 }
 if(($arID = $lAdmin->GroupAction())) {
   if($_REQUEST['action_target']=='selected') {
-    $rsData = CWDA_Profile::GetList(array($by=>$order), $arFilter);
+    $rsData = CME_Profile::GetList(array($by=>$order), $arFilter);
     while($arRes = $rsData->Fetch()) $arID[] = $arRes['ID'];
   }
   foreach($arID as $ID) {
@@ -74,7 +74,7 @@ if(($arID = $lAdmin->GroupAction())) {
 			case "delete":
 				@set_time_limit(0);
 				$DB->StartTransaction();
-				if(!CWDA_Profile::Delete($ID)) {
+				if(!CME_Profile::Delete($ID)) {
 					$DB->Rollback();
 					$lAdmin->AddGroupError(GetMessage("rub_del_err"), $ID);
 				}
@@ -85,7 +85,7 @@ if(($arID = $lAdmin->GroupAction())) {
 }
 
 // Get items list
-$rsData = CWDA_Profile::GetList(array($by => $order), $arFilter);
+$rsData = CME_Profile::GetList(array($by => $order), $arFilter);
 $rsData = new CAdminResult($rsData, $sTableID);
 $rsData->NavStart();
 $lAdmin->NavText($rsData->GetNavPrint(GetMessage("rub_nav")));

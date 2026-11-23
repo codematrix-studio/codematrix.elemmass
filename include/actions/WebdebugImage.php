@@ -1,5 +1,5 @@
 <?
-class CWDA_WebdebugImage extends CWDA_Plugin {
+class CME_WebdebugImage extends CME_Plugin {
 	CONST GROUP = 'IMAGES';
 	CONST CODE = 'WEBDEBUG_IMAGE';
 	CONST NAME = 'Обработка модулем «Обработчик изображений»';

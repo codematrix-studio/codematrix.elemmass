@@ -1,5 +1,5 @@
 <?
-class CWDA_Logger extends CWDA_Plugin {
+class CME_Logger extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'LOGGER';
 	CONST NAME = 'Логирование';

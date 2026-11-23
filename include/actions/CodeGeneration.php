@@ -1,5 +1,5 @@
 <?
-class CWDA_CodeGeneration extends CWDA_Plugin {
+class CME_CodeGeneration extends CME_Plugin {
 	CONST GROUP = 'GENERAL';
 	CONST CODE = 'CODE_GENERATION';
 	CONST NAME = 'Генерация символьного кода';
