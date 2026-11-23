@@ -206,7 +206,7 @@ class CWDA {
 			$PropertyType = ToUpper($PropertyType);
 			$arPropertyType = explode(':',$PropertyType);
 			$PropertyType1 = $arPropertyType[0];
-			$PropertyType2 = $arPropertyType[1];
+			$PropertyType2 = isset($arPropertyType[1]) ? $arPropertyType[1] : false;
 			if (strlen($PropertyType)) {
 				if (isset($arResult[$PropertyType])) {
 					$arResultTmp = $arResult[$PropertyType];
@@ -229,7 +229,7 @@ class CWDA {
 	 *	Get types of comparison (JSON format)
 	 */
 	static function GetComparisonTypesJSON($PropertyType=false, $Operation=false) {
-		$arComparisonTypes = self::GetComparisonTypes($PropertyType=false, $Operation=false);
+		$arComparisonTypes = self::GetComparisonTypes($PropertyType, $Operation);
 		$bUTF = self::IsUtf();
 		if (!$bUTF) {
 			$arComparisonTypes = self::ConvertCharset($arComparisonTypes, 'CP1251', 'UTF-8');
