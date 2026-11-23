@@ -23,7 +23,11 @@ if (!CModule::IncludeModule('iblock')) {
     die('Module "iblock" is not found!');
 }
 
-CJSCore::Init(array('file_input', 'fileinput', 'jquery'));
+CJSCore::RegisterExt('codematrix.elemmass', array(
+    'js' => '/bitrix/js/codematrix.elemmass/codematrix.elemmass.js',
+    'rel' => array('jquery'),
+));
+CJSCore::Init(array('file_input', 'fileinput', 'codematrix.elemmass'));
 $arExcludeKeys = array('autosave_id',
                        'iblock_id',
                        's',
@@ -71,7 +75,7 @@ foreach ($arHtmlEditorJS as $strHtmlEditorJS) {
 $APPLICATION->SetAdditionalCSS($strHtmlEditorPath . 'html-editor.css');
 $APPLICATION->AddHeadScript('/bitrix/js/fileman/core_file_input.js');
 $APPLICATION->AddHeadScript('/bitrix/js/iblock/iblock_edit.js');
-$APPLICATION->AddHeadScript('/bitrix/js/' . $ModuleID . '/' . $ModuleID . '.js');
+
 $APPLICATION->AddHeadString('<script>' . $strJSON . '</script>');
 $APPLICATION->AddHeadString('<script>
 
