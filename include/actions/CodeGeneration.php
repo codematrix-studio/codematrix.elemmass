@@ -229,7 +229,7 @@ class CWDA_CodeGeneration extends CWDA_Plugin {
 		</div>
 		<?
 	}
-	function CodeExists($Code, $IBlockID, $ElementID){
+	static function CodeExists($Code, $IBlockID, $ElementID){
 		return CIBlockElement::GetList(array(),array('IBLOCK_ID'=>$IBlockID,'CODE'=>$Code,'!ID'=>$ElementID),array())>0;
 	}
 	static function Process($ElementID, $arElement, $Params) {
