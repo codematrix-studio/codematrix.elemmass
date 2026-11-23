@@ -8,7 +8,7 @@ require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.ph
 set_time_limit(0);
 ignore_user_abort(true);
 if (CModule::IncludeModule('codematrix.elemmass')) {
-    $cwda = new CWDA;
-    $cwda->CronExec($argv);
+    $cme = new CME;
+    $cme->CronExec($argv);
 }
 ?>
