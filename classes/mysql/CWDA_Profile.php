@@ -194,7 +194,7 @@ class CWDA_Profile {
 			return false;
 		}
 		$resProfile = self::GetByID($ID);
-		if ($arProfile = $resProfile->GetNext(false,false)) {
+		if ($resProfile && ($arProfile = $resProfile->GetNext(false,false))) {
 			$SQL = "DELETE FROM `b_wd_profiles` WHERE `ID`='{$ID}' LIMIT 1;";
 			$resDelete = $DB->Query($SQL, true, __LINE__);
 			if($resDelete->result) {
